@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://java.sun.com/xml/ns/javaee"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+   version="2.5">
+
+    <description>Commenter</description>
+    <display-name>Commenter</display-name>
+    
+    <servlet>
+      <servlet-name>HelloWorld</servlet-name>
+      <servlet-class>bast1aan.commenter.HelloWorldServlet</servlet-class>
+    </servlet>
+
+    <servlet>
+      <servlet-name>Redirect</servlet-name>
+      <servlet-class>bast1aan.commenter.RedirectServlet</servlet-class>
+    </servlet>
+
+
+    <servlet-mapping>
+        <servlet-name>HelloWorld</servlet-name>
+        <url-pattern>/helloworld</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>Redirect</servlet-name>
+        <url-pattern>/redirect</url-pattern>
+    </servlet-mapping>
+
+
+</web-app>

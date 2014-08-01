@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="commenter" basedir=".">
+	<path id="project.class.path">
+		<pathelement location="lib/" />
+		<pathelement path="${java.class.path}" />
+		<pathelement path="/usr/share/java/servlet.jar" />
+	</path>
+	<property name="warfile" value="commenter"/>
+	<target name="unpack">
+		<unwar src="${warfile}.war" dest="war" />
+	</target>
+	<target name="clean">
+		<delete dir="classes" />
+		<delete file="${warfile}.war" />
+		<mkdir dir="classes" />
+	</target>
+	<target name="create" depends="clean, compile">
+		<war destfile="${warfile}.war" webxml="web.xml" update="true">
+			<classes dir="classes"/>
+			<lib dir="lib"/>
+			<fileset dir="web">
+			</fileset>
+		</war>
+	</target>
+	<target name="compile">
+		<javac srcdir="src" destdir="classes" >
+			<classpath refid="project.class.path" />
+		</javac>
+	</target>
+</project>
