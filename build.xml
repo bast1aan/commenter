@@ -1,30 +1,58 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="commenter" basedir=".">
+<project name="commenter" basedir="." xmlns:ivy="antlib:org.apache.ivy.ant">
+	
 	<path id="project.class.path">
-		<pathelement location="lib/" />
+		<fileset dir="lib/">
+			<include name="**/*.jar"/>
+		</fileset>
 		<pathelement path="${java.class.path}" />
 		<pathelement path="/usr/share/java/servlet.jar" />
 	</path>
+	
 	<property name="warfile" value="commenter"/>
+	
+	<target name="init">
+		<mkdir dir="antbuild/classes" />
+		<mkdir dir="antbuild/lib" />
+	</target>
+	
 	<target name="unpack">
 		<unwar src="${warfile}.war" dest="war" />
 	</target>
+	
 	<target name="clean">
-		<delete dir="classes" />
+		<delete dir="antbuild" />
 		<delete file="${warfile}.war" />
-		<mkdir dir="classes" />
 	</target>
-	<target name="create" depends="clean, compile">
-		<war destfile="${warfile}.war" webxml="web.xml" update="true">
-			<classes dir="classes"/>
-			<lib dir="lib"/>
-			<fileset dir="web">
-			</fileset>
-		</war>
-	</target>
-	<target name="compile">
-		<javac srcdir="src" destdir="classes" >
+    
+	<target name="resolve" description="retrieve dependencies with ivy">
+		<ivy:retrieve conf="binaries" pattern="lib/dependencies/[artifact]-[revision](-[classifier]).[ext]"/>
+		<ivy:retrieve conf="sources" pattern="src-jar/[artifact]-[revision](-[classifier]).[ext]"/>
+    </target>
+	
+	<target name="compile" depends="init, resolve">
+		<javac srcdir="src" destdir="antbuild/classes" >
 			<classpath refid="project.class.path" />
 		</javac>
 	</target>
+	
+	<target name="build" depends="compile">
+		
+		<copy todir="antbuild/classes">
+			<fileset dir="src" excludes="**/*.java" />
+		</copy>
+		
+		<copy todir="antbuild/lib" flatten="true">
+			<fileset dir="lib" />
+		</copy>
+		
+		<war destfile="${warfile}.war" webxml="web.xml" update="true">
+			<classes dir="antbuild/classes"/>
+			<lib dir="antbuild/lib" />
+			<fileset dir="web">
+			</fileset>
+		</war>
+		
+	</target>
+	
 </project>
