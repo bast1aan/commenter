@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+ 
+<struts>
+ 
+  <constant name="struts.devMode" value="true" />
+ 
+  <package name="commenter" extends="struts-default">
+	  
+	<action name="index">
+			<result>/WEB-INF/jsp/index.jsp</result>
+	</action>
+    <action name="helloworld" class="bast1aan.commenter.HelloWorldAction" method="execute">
+      <result name="success">/WEB-INF/jsp/HelloWorld.jsp</result>
+    </action>
+  </package>
+</struts>
