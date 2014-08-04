@@ -6,7 +6,6 @@
 			<include name="**/*.jar"/>
 		</fileset>
 		<pathelement path="${java.class.path}" />
-		<pathelement path="/usr/share/java/servlet.jar" />
 	</path>
 	
 	<property name="warfile" value="commenter"/>
