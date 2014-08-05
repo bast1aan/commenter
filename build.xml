@@ -29,7 +29,7 @@
 		<ivy:retrieve conf="sources" pattern="src-jar/[artifact]-[revision](-[classifier]).[ext]"/>
     </target>
 	
-	<target name="compile" depends="init, resolve">
+	<target name="compile" depends="init">
 		<javac srcdir="src" destdir="antbuild/classes" >
 			<classpath refid="project.class.path" />
 		</javac>
