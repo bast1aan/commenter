@@ -50,8 +50,11 @@ public class Dao {
 			ResultSet result = stmt.executeQuery();
 			while (result.next()) {
 				Comment comment = new Comment();
-				comment.setId(result.getLong("id"));
-				comment.setParentId(result.getLong("parent_id"));
+				comment.setId(result.getInt("id"));
+				
+				Integer parentId = result.getInt("parent_id");
+				comment.setParentId(parentId == 0 ? null : parentId);
+				
 				comment.setObjectId(result.getString("object_id"));
 				comment.setText(result.getString("text"));
 				comments.add(comment);

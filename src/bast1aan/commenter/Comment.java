@@ -2,24 +2,24 @@ package bast1aan.commenter;
 
 public class Comment {
 	
-	private long id;
-	private long parentId;
+	private Integer id;
+	private Integer parentId;
 	private String objectId;
 	private String text;
 
-	public long getId() {
+	public Integer getId() {
 		return id;
 	}
 
-	public void setId(long id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 
-	public long getParentId() {
+	public Integer getParentId() {
 		return parentId;
 	}
 
-	public void setParentId(long parentId) {
+	public void setParentId(Integer parentId) {
 		this.parentId = parentId;
 	}
 
