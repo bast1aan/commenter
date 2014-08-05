@@ -9,11 +9,13 @@
         <dependency org="org.apache.struts" name="struts2-core" rev="2.3+" conf="binaries->default" />
 		<dependency org="log4j" name="log4j" rev="1.2+" conf="binaries->default" />
 		<dependency org="javax.servlet" name="servlet-api" rev="2.5" conf="binaries->default" />
+		<dependency org="org.apache.struts" name="struts2-json-plugin" rev="2.3+" conf="binaries->default" />
 		
 		<!-- retrieve the SOURCE jars for struts2 and log4j, for conveniance when developing. -->
         <dependency org="org.apache.struts" name="struts2-core" rev="2.3+" conf="sources->sources" />
 		<dependency org="log4j" name="log4j" rev="1.2+" conf="sources->sources" />
 		<dependency org="javax.servlet" name="servlet-api" rev="2.5" conf="sources->sources" />
+		<dependency org="org.apache.struts" name="struts2-json-plugin" rev="2.3+" conf="sources->sources" />
 
 	</dependencies>
 </ivy-module>

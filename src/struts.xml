@@ -9,11 +9,21 @@
  
   <package name="commenter" extends="struts-default">
 	  
-	<action name="index">
-			<result>/WEB-INF/jsp/index.jsp</result>
-	</action>
-    <action name="helloworld" class="bast1aan.commenter.HelloWorldAction" method="execute">
-      <result name="success">/WEB-INF/jsp/HelloWorld.jsp</result>
-    </action>
+		<action name="index">
+				<result>/WEB-INF/jsp/index.jsp</result>
+		</action>
+		<action name="helloworld" class="bast1aan.commenter.HelloWorldAction" method="execute">
+		  <result name="success">/WEB-INF/jsp/HelloWorld.jsp</result>
+		</action>
   </package>
+	<package name="commenterjson" extends="json-default">
+		<action name="helloworldjson" class="bast1aan.commenter.HelloWorldAction" method="execute">
+			<result type="json">
+				<param name="includeProperties">
+					username,
+					message
+				</param>
+			</result>
+		</action>
+	</package>
 </struts>

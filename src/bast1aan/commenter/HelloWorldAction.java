@@ -10,9 +10,8 @@ public class HelloWorldAction extends ActionSupport {
 
     private static final long serialVersionUID = 1012945817L;
 	
-	//public static final String SUCCESS = "success";
-	
 	private String message;
+	private String username;
 
 	public String getMessage() {
 		return message;
@@ -22,9 +21,18 @@ public class HelloWorldAction extends ActionSupport {
 		this.message = message;
 	}
 	
+	@Override
 	public String execute() throws Exception {
-		setMessage("Hallo allemaal");
+		setMessage(String.format("Hallo allemaal, %s", username));
 		return SUCCESS;
+	}
+	
+	public void setUsername(String username) {
+		this.username = username;
+	}
+	
+	public String getUsername() {
+		return username;
 	}
 	
 }
