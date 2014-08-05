@@ -25,5 +25,17 @@
 				</param>
 			</result>
 		</action>
+		<action name="listcomments" class="bast1aan.commenter.action.ListCommentsAction" method="execute">
+			<result type="json">
+				<param name="includeProperties">
+					comments\[\d+\]\..*
+				</param>
+			</result>
+			<interceptor-ref name="json">
+				<param name="includeProperties">
+					objectId
+				</param>
+			</interceptor-ref>
+		</action>
 	</package>
 </struts>
