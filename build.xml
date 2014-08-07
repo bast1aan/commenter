@@ -21,7 +21,10 @@
 <project name="commenter" basedir="." xmlns:ivy="antlib:org.apache.ivy.ant">
 	
 	<path id="project.class.path">
-		<fileset dir="lib/">
+		<fileset dir="lib/" erroronmissingdir="false">
+			<include name="**/*.jar"/>
+		</fileset>
+		<fileset dir="dependencies/lib/" erroronmissingdir="false">
 			<include name="**/*.jar"/>
 		</fileset>
 		<pathelement path="${java.class.path}" />
@@ -32,6 +35,7 @@
 	<target name="init">
 		<mkdir dir="antbuild/classes" />
 		<mkdir dir="antbuild/lib" />
+		<mkdir dir="antbuild/web" />
 	</target>
 	
 	<target name="unpack">
@@ -43,11 +47,15 @@
 		<delete file="${warfile}.war" />
 	</target>
     
-	<target name="resolve" description="retrieve dependencies with ivy">
-		<ivy:retrieve conf="binaries" pattern="lib/dependencies/[artifact]-[revision](-[classifier]).[ext]"/>
-		<ivy:retrieve conf="sources" pattern="src-jar/[artifact]-[revision](-[classifier]).[ext]"/>
+	<target name="resolve" description="retrieve dependencies with ivy" depends="clean-resolve">
+		<ivy:retrieve conf="binaries" pattern="dependencies/lib/[artifact]-[revision](-[classifier]).[ext]"/>
+		<ivy:retrieve conf="sources" pattern="dependencies/libsrc/[artifact]-[revision](-[classifier]).[ext]"/>
     </target>
-	
+
+	<target name="clean-resolve">
+		<delete dir="dependencies" />
+	</target>
+			
 	<target name="compile" depends="init">
 		<javac srcdir="src" destdir="antbuild/classes" >
 			<classpath refid="project.class.path" />
@@ -61,13 +69,19 @@
 		</copy>
 		
 		<copy todir="antbuild/lib" flatten="true">
-			<fileset dir="lib" />
+			<fileset dir="lib" erroronmissingdir="false" />
+			<fileset dir="dependencies/lib" erroronmissingdir="false" />
 		</copy>
-		
+
+		<copy todir="antbuild/web">
+			<fileset dir="web" />
+			<fileset dir="dependencies/web" erroronmissingdir="false" />
+		</copy>
+						
 		<war destfile="${warfile}.war" webxml="web.xml" update="true">
 			<classes dir="antbuild/classes"/>
 			<lib dir="antbuild/lib" />
-			<fileset dir="web">
+			<fileset dir="antbuild/web">
 			</fileset>
 		</war>
 		
