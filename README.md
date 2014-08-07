@@ -49,9 +49,9 @@ I use the RestClient firefox plugin for testing this application.
 
 **Creating new comment**
 
-POST http://localhost:8080/commenter/savecomment.action
-Content-type: application/json; charset=UTF-8
-`{ "comment" : { "objectId" : "newsArticle_451", "text" : "This is a great news article!" } }`
+POST http://localhost:8080/commenter/savecomment.action  
+Content-type: application/json; charset=UTF-8  
+`{ "comment" : { "objectId" : "newsArticle_451", "text" : "This is a great news article!" } }`  
 
 Result is the new comment with added field id and parent_id :
 
@@ -69,8 +69,8 @@ Result is the new comment with added field id and parent_id :
 
 **Listing comments**
 
-POST http://localhost:8080/commenter/listcomments.action
-Content-type: application/json; charset=UTF-8
+POST http://localhost:8080/commenter/listcomments.action  
+Content-type: application/json; charset=UTF-8  
 `{ "objectId" : "newsArticle_451" }`
 
 Result is a list of comments belonging to `newsArticle_451`:
