@@ -74,7 +74,11 @@ public class Dao {
 				comment.setParentId(parentId == 0 ? null : parentId);
 				
 				comment.setObjectId(result.getString("object_id"));
+				comment.setName(result.getString("name"));
+				comment.setEmail(result.getString("email"));
 				comment.setText(result.getString("text"));
+				comment.setCreatedAt(result.getTimestamp("created_at"));
+				comment.setUpdatedAt(result.getTimestamp("updated_at"));
 				comments.add(comment);
 			}
 			result.close();
@@ -94,16 +98,16 @@ public class Dao {
 		try {
 			if (id != null) {
 				//.update needed
-				query = "UPDATE comments SET parent_id = ?, object_id = ?, text = ? WHERE id = ?";
+				query = "UPDATE comments SET parent_id = ?, object_id = ?, name = ?, email = ?, text = ?, updated_at = now() WHERE id = ?";
 				stmt = conn.prepareStatement(query);
 			} else {
-				query = "INSERT INTO comments (parent_id, object_id, text) VALUES ( ?, ?, ? )";
+				query = "INSERT INTO comments (parent_id, object_id, name, email, text, created_at, updated_at) VALUES ( ?, ?, ?, ?, ?, now(), now() )";
 				stmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
 			}
 			
 			setCommentToStatement(comment, stmt);
 			if (id != null) { // update
-				stmt.setLong(4, id);
+				stmt.setLong(6, id);
 			}
 			int affected = stmt.executeUpdate();
 			
@@ -128,6 +132,8 @@ public class Dao {
 		else
 			stmt.setInt(1, parentId);
 		stmt.setString(2, comment.getObjectId());
-		stmt.setString(3, comment.getText());
+		stmt.setString(3, comment.getName());
+		stmt.setString(4, comment.getEmail());
+		stmt.setString(5, comment.getText());
 	}
 }
