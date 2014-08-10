@@ -15,3 +15,15 @@ CREATE INDEX fki_comments_fk_parent_id
   
 CREATE INDEX idx_comments_object_id
    ON comments (object_id ASC NULLS LAST);
+
+ALTER TABLE comments
+   ADD COLUMN name character varying(255);
+
+ALTER TABLE comments
+   ADD COLUMN email character varying(255);
+
+ALTER TABLE comments
+   ADD COLUMN created_at timestamp without time zone;
+
+ALTER TABLE comments
+   ADD COLUMN updated_at timestamp without time zone;
