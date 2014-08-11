@@ -1,5 +1,16 @@
 <ul>
 <% for(var i = 0; i < comments.length; i++) { %>
-<li><%= comments.at(i).get('text') %></li>
+<% var comment = comments[i]; %>
+<% if(_.contains(alreadyProcessed, comment.get('id')))
+	continue; %>
+<% alreadyProcessed.push(comment.get('id')); %>
+<li>
+	<h2><%= comment.get('id') %> <%= comment.get('name') %> (<%= comment.get('parentId') %>)</h2>
+	<span><%= comment.get('createdAt') %></span>
+	<p><%= comment.get('text') %></p>
+	<% if (commentsByParentId[comment.get('id')]) { %>
+	<%= render(commentsByParentId[comment.get('id')], alreadyProcessed) %>
+	<% } %>
+</li>
 <% } %>
 </ul>

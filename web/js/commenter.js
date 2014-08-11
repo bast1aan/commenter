@@ -33,6 +33,34 @@ $.getScript(srcpath + "/require.js")
 			
 			var CommentCollection = Backbone.Collection.extend({model : Comment});
 			
+			var ListView = Backbone.View.extend({
+				
+				initialize : function() {
+					this.listenTo(this.collection, "change", this.render())
+				},
+				
+				render : function() {
+					this.$el.html(this.doRender(this.collection.sortBy(function(comment) {
+							return comment.get('createdAt');
+						}),
+						[]
+					));
+					return this;
+				},
+				
+				doRender : function(comments, alreadyProcessed) {
+					return Underscore.template(list, { 
+						comments : comments,
+						commentsByParentId : _.groupBy(comments, function(comment) {
+							return comment.get('parentId');
+						}),
+						render : this.doRender,
+						alreadyProcessed : alreadyProcessed
+					});
+				}
+				
+			});
+			
 			var container = jQuery("#commenter-container");
 			
 			jQuery.ajax({
@@ -46,8 +74,7 @@ $.getScript(srcpath + "/require.js")
 				success : function(data){
 					if (data.comments) {
 						var comments = new CommentCollection(data.comments);
-						container.html(container.html() + 
-								Underscore.template(list, {comments : comments}));
+						var view = new ListView({ collection : comments, el : container[0] });
 					}
 				},
 				error : function(jqHXR, textStatus, e) {
@@ -58,7 +85,7 @@ $.getScript(srcpath + "/require.js")
 			var comment = new Comment({ objectId : 'newsArticle_513', text : 'A test comment'});
 			var commentJSON = comment.toJSON();
 			
-			container.html(container.html() + Underscore.template(form, comment.toJSON()));
+			//container.html(container.html() + Underscore.template(form, comment.toJSON()));
 			
 			//alert(JSON.stringify({ comment : commentJSON }));
 			
