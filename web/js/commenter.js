@@ -24,7 +24,11 @@ $.getScript(srcpath + "/require.js")
 				id : null,
 				parentId : null,
 				objectId : null,
-				text : null
+				name : null,
+				email : null,
+				text : null,
+				createdAt : null,
+				updatedAt : null
 			});
 			
 			var CommentCollection = Backbone.Collection.extend({model : Comment});
