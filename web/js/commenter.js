@@ -63,7 +63,7 @@ $('script').each(function(i, e) {
 	}
 });
 
-// load require with rest of the application
+// load require with main stuff of this application
 $.getScript(srcpath + "/require.js")
 	.done(function(script, textStatus) {
 		requirejs.config({ 'baseUrl' : srcpath});
@@ -90,7 +90,7 @@ $.getScript(srcpath + "/require.js")
 			var ListView = Backbone.View.extend({
 				
 				initialize : function() {
-					this.listenTo(this.collection, "change", this.render())
+					this.listenTo(this.collection, "change", this.render());
 				},
 				
 				render : function() {
