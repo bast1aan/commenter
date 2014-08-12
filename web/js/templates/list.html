@@ -6,7 +6,7 @@
 <% alreadyProcessed.push(comment.get('id')); %>
 <li>
 	<h2><%= comment.get('id') %> <%= comment.get('name') %> (<%= comment.get('parentId') %>)</h2>
-	<span><%= comment.get('createdAt') %></span>
+	<span><%= displayDate(new Date(comment.get('createdAt'))) %></span>
 	<p><%= filterCommentText(comment.get('text')) %></p>
 	<% if (commentsByParentId[comment.get('id')]) { %>
 	<%= render(commentsByParentId[comment.get('id')], alreadyProcessed) %>

@@ -1,5 +1,26 @@
 "use strict";
 
+/**
+ * Display date
+ * @param Date Date
+ * @returns string text
+ */
+var displayDate = function(date) {
+	var zeroFill = function(value) {
+		value = value.toString();
+		if (value.length < 2)
+			value = '0' + value;
+		return value;
+	}
+	var text;
+	text  = zeroFill(date.getDate()) + "-";
+	text +=	zeroFill(date.getMonth() + 1) + "-";
+	text +=	date.getFullYear() + " ";
+	text +=	zeroFill(date.getHours()) + ":";
+	text +=	zeroFill(date.getMinutes()) + ":";
+	text +=	zeroFill(date.getSeconds());
+	return text;
+}
 /*
  * Filter for comment text to make them viewable.
  * Strips html tags from text
