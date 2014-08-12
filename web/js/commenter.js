@@ -1,5 +1,59 @@
 "use strict";
 
+/*
+ * Filter for comment text to make them viewable.
+ * Strips html tags from text
+ * EXCEPT u, i, em, br, strong, b.
+ * and creates link tags
+ */
+var filterCommentText = function(text) {
+	
+	// create <br /> tags at line endings
+	text = text.replace(/\n/g, "<br />\n");
+	
+	// remove a tags but preserve link in href is it starts with http(s)
+	text = text.replace(/<a.*?href="(https?:.*?)".*?>.*?<\/a.*?>/ig, "$1");
+	
+	// strip html comments
+	text = text.replace(/<!--(.*?)-->/ig, '');
+	
+	// strip html attributes
+	text = text.replace(/<([a-z][a-z0-9]*)[^>]*?(\/?)>/ig, '<$1$2>');
+	
+	// underline
+	text = text.replace(/<u\s*?>(.*?)<\/u\s*>/mig, '<span class="underline">$1</span>');
+	
+	// bold
+	text = text.replace(/<b\s*?>(.*?)<\/b\s*>/mig, '<strong>$1</strong>');
+	
+	// italic
+	text = text.replace(/<i\s*?>(.*?)<\/i\s*>/mig, '<em>$1</em>');
+	
+	// strip everything except allowed tags
+	// TODO: validate if open tags have corresponding close tags
+	text = text.replace(/<\/?(?:(?!strong|em|span class="underline"|span|br).)*?\/?>/ig, "");
+	
+	// detect links and create tag for them
+	var pattern;
+	pattern  = '[ \\t\\r\\n]';              // whitespace
+	pattern += '(([A-Za-z]{3,9}):\\/\\/';   // protocol
+	pattern += '([-;:&=\\+\\$,\\w]+@{1})?';  // User info (optional)
+	pattern += '([-A-Za-z0-9\\.]+)+';      // FQDN or IP
+	pattern += ':?(\\d+)?';                // port (optional)
+	pattern += '(';                       // start to capture complete REQUEST_URI
+	pattern += '\\/([-\\+~%\\/\\.\\w]+)?';     // path and filename (optional)
+	pattern += '\\??([-\\+=&;%@\\.\\w]+)?';   // query string (optional)
+	pattern += '#?([\\w]+)?';              // anchor (optional)
+	pattern += ')?)';                     // end capturing REQUEST_URI and close pattern
+
+	text = text.replace(new top.RegExp(pattern), " <a href=\"$1\">$1</a>");
+
+	// email
+	text = text.replace(/[ \t\r\n]([A-Z0-9._%+-]+\@[A-Z0-9.-]+\.[A-Z]{2,6})/i, ' <a href=\"mailto:$1\">$1</a>');
+	
+	return text;
+};
+
 // find URL of current script
 var srcpath = "";
 $('script').each(function(i, e) { 
