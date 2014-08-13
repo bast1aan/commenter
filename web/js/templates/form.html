@@ -1,9 +1,15 @@
 <form id="commenter-form">
+	<input type="hidden" name="objectId" value="<%= comment.get('objectId') %>" />
+	<input type="hidden" name="id" value="<%= comment.get('id') %>" />
+	<input type="hidden" name="parentId" value="<%= comment.get('parentId') %>" />
 	<dl>
-		<dt>Object ID:</dt>
-		<dd><input type="text" name="objectId" value="<%= objectId %>"/></dd>
-		<dt>Your comment:</dt>
-		<dd><textarea type="text" name="text"><%= text %></textarea></dd>
+		<dt>Name:</dt>
+		<dd><input type="text" name="name" value="<%= comment.get('name') %>"/></dd>
+		<dt>Email:</dt>
+		<dd><input type="text" name="email" value="<%= comment.get('email') %>"/></dd>
+		<dt>Comment:</dt>
+		<dd><textarea name="text"><%= comment.get('text') %></textarea></dd>
 		<dt></dt>
 		<dd><input type="submit" value="Submit" /></dd>
+	</dl>
 </form>

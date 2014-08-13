@@ -109,6 +109,23 @@ $.getScript(srcpath + "/require.js")
 			
 			var CommentCollection = Backbone.Collection.extend({model : Comment});
 			
+			var FormView = Backbone.View.extend({
+				
+				initialize : function() {
+					this.listenTo(this.model, "change", this.render);
+				},
+				render : function() {
+					this.$el.html(Underscore.template(form, {comment : this.model}));
+					$('#comment-form').submit(function(e) {
+						alert(e);
+					})
+					return this;
+				}
+			});
+			
+			var formComment = new Comment({ objectId : 'testobject' });
+			var formView = new FormView({model : formComment});
+			
 			var ListView = Backbone.View.extend({
 				
 				initialize : function() {
