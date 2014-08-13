@@ -47,7 +47,9 @@ var displayDate = function(date) {
  * and creates link tags
  */
 var filterCommentText = function(text) {
-	
+	if (!text) {
+		return ;
+	}
 	// create <br /> tags at line endings
 	text = text.replace(/\n/g, "<br />\n");
 	
