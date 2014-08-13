@@ -226,6 +226,11 @@ $.getScript(srcpath + "/require.js")
 						return false;
 					})
 					return this;
+				},
+				
+				attachToContainer : function() {
+					formComment.set('parentId', null);
+					container.append(this.$el);
 				}
 			});
 			
