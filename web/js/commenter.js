@@ -223,6 +223,7 @@ $.getScript(srcpath + "/require.js")
 						comment.set(formValues);
 						saveComment(comment);
 						readComments();
+						return false;
 					})
 					return this;
 				}
