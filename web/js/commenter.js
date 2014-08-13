@@ -197,21 +197,29 @@ $.getScript(srcpath + "/require.js")
 				},
 				
 				render : function() {
-					this.$el.html(this.doRender(this.collection.sortBy(function(comment) {
+					// sort collection by creation date
+					var sortedCollection = this.collection.sortBy(function(comment) {
 							return comment.get('createdAt');
-						}),
-						[]
-					));
+					});
+					
+					// group collection by parent ID to create tree structure
+					var groupedCollection = _.groupBy(sortedCollection, function(comment) {
+							return comment.get('parentId');
+						});
+					
+					this.$el.html(this.doRender(sortedCollection, groupedCollection, []));
+
 					return this;
 				},
 				
-				doRender : function(comments, alreadyProcessed) {
+				doRender : function(comments, groupedComments, alreadyProcessed, render) {
+					if (render == null) {
+						render = this.doRender;
+					}
 					return Underscore.template(list, { 
 						comments : comments,
-						commentsByParentId : _.groupBy(comments, function(comment) {
-							return comment.get('parentId');
-						}),
-						render : this.doRender,
+						commentsByParentId : groupedComments,
+						render : render,
 						alreadyProcessed : alreadyProcessed
 					});
 				},

@@ -10,7 +10,7 @@
 	<p><%= filterCommentText(comment.get('text')) %></p>
 	<button class="reply" id="replyOn<%= comment.get('id') %>">Reply</button>
 	<% if (commentsByParentId[comment.get('id')]) { %>
-	<%= render(commentsByParentId[comment.get('id')], alreadyProcessed) %>
+	<%= render(commentsByParentId[comment.get('id')], commentsByParentId, alreadyProcessed, render) %>
 	<% } %>
 </li>
 <% } %>
