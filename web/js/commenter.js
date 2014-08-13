@@ -187,9 +187,30 @@ $.getScript(srcpath + "/require.js")
 				initialize : function() {
 					this.listenTo(this.model, "change", this.render);
 				},
+				
+				cancelButton : false,
+				
+				setCancelButton : function(enable) {
+					this.cancelButton = enable;
+					this.render();
+				},
+				
+				cancelButtonListener : function(){},
+				
 				render : function() {
 					var comment = this.model;
 					this.$el.html(Underscore.template(form, {comment : comment}));
+					if (this.cancelButton) {
+						var cancelButtonJQ = $(document.createElement('button'));
+						cancelButtonJQ.text("Cancel");
+						var formNode = $('#commenter-form')[0];
+						for (var i = 0; i < formNode.length; i++) {
+							if (formNode[i].type && formNode[i].type == 'submit') {
+								formNode[i].parentNode.appendChild(cancelButtonJQ[0]);
+							}
+						}
+						cancelButtonJQ.on('click', this.cancelButtonListener);
+					}
 					$('#commenter-form').submit(function(e) {
 						// gather form values
 						var formValues = {};
