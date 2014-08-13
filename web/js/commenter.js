@@ -260,12 +260,6 @@ $.getScript(srcpath + "/require.js")
 
 			
 			readComments();
-			var comment = new Comment({ objectId : 'newsArticle_513', text : 'A test comment'});
-			var commentJSON = comment.toJSON();
-			
-			//container.html(container.html() + Underscore.template(form, comment.toJSON()));
-			
-			//alert(JSON.stringify({ comment : commentJSON }));
 			
 		});
 	})
