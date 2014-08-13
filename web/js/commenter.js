@@ -279,16 +279,28 @@ $.getScript(srcpath + "/require.js")
 					var buttonNode = e.currentTarget;
 					var parentId = buttonNode.id.substring("replyOn".length);
 					formView.$el.insertBefore($(buttonNode));
+					formView.cancelButtonListener = function(e) {
+						$(buttonNode).show();
+						formView.cancelButton = false;
+						formView.attachToContainer();
+						return false;
+					};
+					formView.cancelButton = true;
+
 					formComment.set('parentId', parentId);
+					$(buttonNode).hide();
 				}
 				
 				
 			});
 
-			var listView = new ListView({ collection : comments, el : container[0] });
+			var listView = new ListView({ collection : comments});
+			container.append(listView.$el);
 
 			
 			readComments();
+			
+			formView.attachToContainer();
 			
 		});
 	})
