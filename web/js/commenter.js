@@ -150,7 +150,19 @@ $.getScript(srcpath + "/require.js")
 						render : this.doRender,
 						alreadyProcessed : alreadyProcessed
 					});
+				},
+				
+				events: {
+					"click .reply" : 'replyOnComment'
+				},
+				
+				replyOnComment : function(e) {
+					var buttonNode = e.currentTarget;
+					var parentId = buttonNode.id.substring("replyOn".length);
+					formView.$el.insertBefore($(buttonNode));
+					formComment.set('parentId', parentId);
 				}
+				
 				
 			});
 			
