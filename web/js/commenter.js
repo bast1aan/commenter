@@ -95,6 +95,8 @@ $.getScript(srcpath + "/require.js")
 			"text!templates/form.html?v=2",
 			"text!templates/list.html?v=1"
 		], function(Underscore, Backbone, form, list) {
+
+			var container = jQuery("#commenter-container");
 			
 			var Comment = Backbone.Model.extend({
 				id : null,
@@ -108,6 +110,57 @@ $.getScript(srcpath + "/require.js")
 			});
 			
 			var CommentCollection = Backbone.Collection.extend({model : Comment});
+
+			var comments = new CommentCollection();
+
+			/**
+			 * Function to retrieve the comments and populate comment collection
+			 */
+			var readComments = function() {
+				jQuery.ajax({
+					url : "/commenter/listcomments.action",
+					cache : false,
+					data : "{ 'objectId' : 'testobject' }",
+					contentType : 'application/json',
+					type : 'POST',
+					dataType : 'json',
+					crossDomain : true,
+					success : function(data){
+						if (data.comments) {
+							comments.reset(data.comments);
+						}
+					},
+					error : function(jqHXR, textStatus, e) {
+						throw "Error executing request: " + textStatus + " : " + e;
+					}
+				});
+
+			}
+		
+			/**
+			 * Save the comment to the backend.
+			 * @param Comment comment
+			 */
+			var saveComment = function(comment) {
+				jQuery.ajax({
+					url : "/commenter/savecomment.action",
+					cache : false,
+					data : JSON.stringify({ 'comment' : comment }),
+					contentType : 'application/json',
+					type : 'POST',
+					dataType : 'json',
+					success : function(data){
+						if (data.comment) {
+							// re-read the comment list
+							readComments();
+						}
+					},
+					error : function(jqHXR, textStatus, e) {
+						throw "Error executing request: " + textStatus + " : " + e;
+					}
+				});
+				
+			};
 			
 			var FormView = Backbone.View.extend({
 				
@@ -115,9 +168,20 @@ $.getScript(srcpath + "/require.js")
 					this.listenTo(this.model, "change", this.render);
 				},
 				render : function() {
-					this.$el.html(Underscore.template(form, {comment : this.model}));
-					$('#comment-form').submit(function(e) {
-						alert(e);
+					var comment = this.model;
+					this.$el.html(Underscore.template(form, {comment : comment}));
+					$('#commenter-form').submit(function(e) {
+						// gather form values
+						var formValues = {};
+						for (var i = 0; i < e.currentTarget.length; i++) {
+							var element = e.currentTarget[i];
+							if (element.name && element.name.length > 0 && element.value && element.value.length > 0)
+								formValues[element.name] = element.value;
+						}
+						// set model with gathered form values
+						comment.set(formValues);
+						saveComment(comment);
+						readComments();
 					})
 					return this;
 				}
@@ -129,7 +193,7 @@ $.getScript(srcpath + "/require.js")
 			var ListView = Backbone.View.extend({
 				
 				initialize : function() {
-					this.listenTo(this.collection, "change", this.render());
+					this.listenTo(this.collection, "reset", this.render);
 				},
 				
 				render : function() {
@@ -165,28 +229,11 @@ $.getScript(srcpath + "/require.js")
 				
 				
 			});
+
+			var listView = new ListView({ collection : comments, el : container[0] });
+
 			
-			var container = jQuery("#commenter-container");
-			
-			jQuery.ajax({
-				url : "/commenter/listcomments.action",
-				cache : false,
-				data : "{ 'objectId' : 'testobject' }",
-				contentType : 'application/json',
-				type : 'POST',
-				dataType : 'json',
-				crossDomain : true,
-				success : function(data){
-					if (data.comments) {
-						var comments = new CommentCollection(data.comments);
-						var view = new ListView({ collection : comments, el : container[0] });
-					}
-				},
-				error : function(jqHXR, textStatus, e) {
-					throw "Error executing request: " + textStatus + " : " + e;
-				}
-			});
-			
+			readComments();
 			var comment = new Comment({ objectId : 'newsArticle_513', text : 'A test comment'});
 			var commentJSON = comment.toJSON();
 			
