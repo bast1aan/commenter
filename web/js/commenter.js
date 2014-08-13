@@ -20,7 +20,8 @@ var displayDate = function(date) {
 	text +=	zeroFill(date.getMinutes()) + ":";
 	text +=	zeroFill(date.getSeconds());
 	return text;
-}
+};
+
 /*
  * Filter for comment text to make them viewable.
  * Strips html tags from text
