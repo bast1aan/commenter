@@ -1,0 +1,44 @@
+.commenter-container ul {
+	list-style-type: none;
+	padding-left: 15px;
+}
+
+.commenter-container ul li {
+	margin-top: 10px;
+}
+
+.commenter-container ul li ul {
+	margin-top: 10px;
+}
+
+.commenter-container form dl:after {
+	clear: left;
+}
+
+.commenter-container form {
+	overflow: hidden;
+}
+
+.commenter-container form dt,  .commenter-container form dd {
+	float: left;
+	margin-bottom: 5px;
+}
+
+.commenter-container form dt {
+	width: 100px;
+	clear: left;
+	text-align: right;
+}
+
+.commenter-container form dd {
+	margin-left: 5px;
+}
+
+.commenter-container input[type=text] {
+	width: 350px;
+}
+
+
+.commenter-container form textarea {
+	height: 12em; width: 350px;
+}

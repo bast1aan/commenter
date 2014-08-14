@@ -141,7 +141,10 @@ if (typeof $commenterContainer == "string") {
 } else if (typeof $commenterContainer == "object" && !($commenterContainer instanceof jQuery)) {
 	$commenterContainer = $($commenterContainer);
 }
-		
+
+if (!$commenterContainer.hasClass('commenter-container')) {
+	$commenterContainer.addClass('commenter-container');
+}
 
 // determine object id
 
