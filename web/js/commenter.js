@@ -250,10 +250,11 @@ $.getScript(srcpath + "/require.js")
 				render : function() {
 					var comment = this.model;
 					this.$el.html(Underscore.template(form, {comment : comment}));
+					var $form = this.$el.find('#commenter-form');
 					if (this.cancelButton) {
 						var cancelButtonJQ = $(document.createElement('button'));
 						cancelButtonJQ.text("Cancel");
-						var formNode = $('#commenter-form')[0];
+						var formNode = $form[0];
 						for (var i = 0; i < formNode.length; i++) {
 							if (formNode[i].type && formNode[i].type == 'submit') {
 								formNode[i].parentNode.appendChild(cancelButtonJQ[0]);
@@ -261,7 +262,7 @@ $.getScript(srcpath + "/require.js")
 						}
 						cancelButtonJQ.on('click', this.cancelButtonListener);
 					}
-					$('#commenter-form').submit(function(e) {
+					$form.submit(function(e) {
 						// gather form values
 						var formValues = {};
 						for (var i = 0; i < e.currentTarget.length; i++) {
@@ -274,7 +275,7 @@ $.getScript(srcpath + "/require.js")
 						saveComment(comment);
 						readComments();
 						return false;
-					})
+					});
 					return this;
 				},
 				
