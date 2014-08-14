@@ -143,6 +143,20 @@ if (typeof $commenterContainer == "string") {
 }
 		
 
+// determine object id
+
+var thisCommenterObjectId;
+if (typeof commenterObjectId != 'undefined') {
+	thisCommenterObjectId = commenterObjectId;
+}
+if (!thisCommenterObjectId) {
+	thisCommenterObjectId = $script.data('objectId');
+}
+if (!thisCommenterObjectId) {
+	thisCommenterObjectId = 'testobject';
+}
+
+
 // load require with main stuff of this application
 $.getScript(srcpath + "/require.js")
 	.done(function(script, textStatus) {
@@ -176,7 +190,7 @@ $.getScript(srcpath + "/require.js")
 				jQuery.ajax({
 					url : "/commenter/listcomments.action",
 					cache : false,
-					data : "{ 'objectId' : 'testobject' }",
+					data : "{ 'objectId' : '" + thisCommenterObjectId + "' }",
 					contentType : 'application/json',
 					type : 'POST',
 					dataType : 'json',
@@ -270,7 +284,7 @@ $.getScript(srcpath + "/require.js")
 				}
 			});
 			
-			var formComment = new Comment({ objectId : 'testobject' });
+			var formComment = new Comment({ objectId : thisCommenterObjectId });
 			var formView = new FormView({model : formComment});
 			
 			var ListView = Backbone.View.extend({
