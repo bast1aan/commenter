@@ -99,6 +99,7 @@ var filterCommentText = function(text) {
 // find URL of current script
 var srcpath = "";
 var commenterPath = "";
+var $script;
 $('script').each(function(i, e) { 
 	var $e = $(e);
 	var path = $e.attr('src');
@@ -111,8 +112,36 @@ $('script').each(function(i, e) {
 			commenterPath = '.';
 		}
 		srcpath = commenterPath + "/js";
+		$script = $e; 
 	}
 });
+
+// determine container for storing comments
+var $commenterContainer;
+if (typeof commenterContainer != 'undefined') {
+	$commenterContainer = commenterContainer;
+}
+
+if (!$commenterContainer) {
+	$commenterContainer = $script.data('container');
+}
+
+if (!$commenterContainer) {
+	// no config provided, create new div element before
+	// script tag
+	$commenterContainer = $(document.createElement('div'));
+	$commenterContainer.insertBefore($script);
+}
+
+if (typeof $commenterContainer == "string") {
+	if ($commenterContainer.substring(0, 1) != '#') {
+		$commenterContainer = '#' + $commenterContainer;
+	}
+	$commenterContainer = $($commenterContainer);
+} else if (typeof $commenterContainer == "object" && !($commenterContainer instanceof jQuery)) {
+	$commenterContainer = $($commenterContainer);
+}
+		
 
 // load require with main stuff of this application
 $.getScript(srcpath + "/require.js")
@@ -125,8 +154,6 @@ $.getScript(srcpath + "/require.js")
 			"text!templates/list.html?v=1"
 		], function(Underscore, Backbone, form, list) {
 
-			var container = jQuery("#commenter-container");
-			
 			var Comment = Backbone.Model.extend({
 				id : null,
 				parentId : null,
@@ -239,7 +266,7 @@ $.getScript(srcpath + "/require.js")
 				
 				attachToContainer : function() {
 					formComment.set('parentId', null);
-					container.append(this.$el);
+					$commenterContainer.append(this.$el);
 				}
 			});
 			
@@ -304,7 +331,7 @@ $.getScript(srcpath + "/require.js")
 			});
 
 			var listView = new ListView({ collection : comments});
-			container.append(listView.$el);
+			$commenterContainer.append(listView.$el);
 
 			
 			readComments();
