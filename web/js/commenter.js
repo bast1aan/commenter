@@ -306,7 +306,10 @@ $.getScript(srcpath + "/require.js")
 						});
 					
 					this.$el.html(this.doRender(sortedCollection, groupedCollection, []));
-
+					
+					// after rendering list, attach form to bottom of container
+					formView.attachToContainer();
+					
 					return this;
 				},
 				
