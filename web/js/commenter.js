@@ -33,7 +33,7 @@ var displayDate = function(date) {
 	var text;
 	text  = zeroFill(date.getDate()) + "-";
 	text +=	zeroFill(date.getMonth() + 1) + "-";
-	text +=	date.getFullYear() + " ";
+	text +=	date.getFullYear() + " at ";
 	text +=	zeroFill(date.getHours()) + ":";
 	text +=	zeroFill(date.getMinutes()) + ":";
 	text +=	zeroFill(date.getSeconds());

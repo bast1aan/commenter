@@ -5,8 +5,7 @@
 	continue; %>
 <% alreadyProcessed.push(comment.get('id')); %>
 <li id="comment<%= comment.get('id') %>">
-	<h2><%= comment.get('id') %> <%= comment.get('name') %> (<%= comment.get('parentId') %>)</h2>
-	<span><%= displayDate(new Date(comment.get('createdAt'))) %></span>
+	<span class="commenter-head"><strong><%= comment.get('name') %></strong> on <strong><%= displayDate(new Date(comment.get('createdAt'))) %></strong> wrote:</span>
 	<p><%= filterCommentText(comment.get('text')) %></p>
 	<button class="reply" id="replyOn<%= comment.get('id') %>">Reply</button>
 	<% if (commentsByParentId[comment.get('id')]) { %>
