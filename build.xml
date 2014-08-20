@@ -70,7 +70,7 @@
 	</target>
 			
 	<target name="compile" depends="init">
-		<javac srcdir="src" destdir="antbuild/classes" >
+		<javac srcdir="src" destdir="antbuild/classes" source="1.6" target="1.6">
 			<classpath refid="project.class.path" />
 		</javac>
 	</target>
