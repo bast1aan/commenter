@@ -183,6 +183,9 @@ $.getScript(srcpath + "/require.js")
 
 			var comments = new CommentCollection();
 
+			// For IE8 and IE9
+			jQuery.support.cors = true;
+
 			/**
 			 * Function to retrieve the comments and populate comment collection
 			 */
@@ -219,6 +222,7 @@ $.getScript(srcpath + "/require.js")
 					contentType : 'application/json',
 					type : 'POST',
 					dataType : 'json',
+					crossDomain : true,
 					success : function(data){
 						if (data.comment) {
 							// re-read the comment list
