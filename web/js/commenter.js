@@ -351,6 +351,7 @@ $.getScript(srcpath + "/require.js")
 					formComment.set('parentId', parentId);
 					$('.reply').show();
 					$(buttonNode).hide();
+					formView.$el.find('h3').text('Reply');
 				}
 				
 				
