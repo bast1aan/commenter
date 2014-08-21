@@ -349,6 +349,7 @@ $.getScript(srcpath + "/require.js")
 					formView.cancelButton = true;
 
 					formComment.set('parentId', parentId);
+					$('.reply').show();
 					$(buttonNode).hide();
 				}
 				
