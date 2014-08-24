@@ -156,6 +156,8 @@ if (!$commenterContainer.hasClass('commenter-container')) {
 	$commenterContainer.addClass('commenter-container');
 }
 
+$('head').append('<link rel="stylesheet" type="text/css" href="' + commenterPath + '/css/commenter.css" />');
+
 // determine object id
 
 var thisCommenterObjectId;
