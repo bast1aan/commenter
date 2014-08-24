@@ -52,17 +52,12 @@
 		<ivy:retrieve conf="sources" pattern="dependencies/libsrc/[artifact]-[revision](-[classifier]).[ext]"/>
 		
 		<!-- get backbone -->
-		<mkdir dir="dependencies/web/js" />
-		<get src="http://backbonejs.org/backbone.js" dest="dependencies/web/js/backbone.js" />
-		<!-- get require.js -->
-		<get src="http://requirejs.org/docs/release/2.1.14/comments/require.js" dest="dependencies/web/js/require.js" />
+		<mkdir dir="dependencies/js" />
+		<get src="http://backbonejs.org/backbone.js" dest="dependencies/js/backbone.js" />
 		<!-- get underscore.js -->
-		<get src="http://underscorejs.org/underscore.js" dest="dependencies/web/js/underscore.js" />
+		<get src="http://underscorejs.org/underscore.js" dest="dependencies/js/underscore.js" />
 		<!-- get jquery -->
-		<get src="http://code.jquery.com/jquery-1.11.1.js" dest="dependencies/web/js/jquery.js" />
-		<!-- get require/text.js -->
-		<get src="https://raw.githubusercontent.com/requirejs/text/master/text.js" dest="dependencies/web/js/text.js" />
-		
+		<get src="http://code.jquery.com/jquery-1.11.1.js" dest="dependencies/js/jquery.js" />
     </target>
 
 	<target name="clean-resolve">
