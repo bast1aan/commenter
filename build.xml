@@ -36,6 +36,7 @@
 		<mkdir dir="antbuild/classes" />
 		<mkdir dir="antbuild/lib" />
 		<mkdir dir="antbuild/web" />
+		<mkdir dir="antbuild/web/js" />
 	</target>
 	
 	<target name="unpack">
@@ -58,6 +59,8 @@
 		<get src="http://underscorejs.org/underscore.js" dest="dependencies/js/underscore.js" />
 		<!-- get jquery -->
 		<get src="http://code.jquery.com/jquery-1.11.1.js" dest="dependencies/js/jquery.js" />
+		<!-- get PreprocessJS -->
+		<get src="https://github.com/bast1aan/preprocess-js/raw/master/PreprocessJS.class" dest="dependencies/PreprocessJS.class" />
     </target>
 
 	<target name="clean-resolve">
@@ -70,7 +73,19 @@
 		</javac>
 	</target>
 	
-	<target name="build" depends="compile">
+	<target name="preprocessjs" depends="init">
+		<java classname="PreprocessJS">
+			<arg value="-i" />
+			<arg value="js/main.js" />
+			<arg value="-o" />
+			<arg value="antbuild/web/js/commenter.js" />
+			<classpath>
+				<pathelement location="dependencies/"/>
+			</classpath>
+		</java>
+	</target>
+	
+	<target name="build" depends="compile, preprocessjs">
 		
 		<copy todir="antbuild/classes">
 			<fileset dir="src" excludes="**/*.java" />
