@@ -194,7 +194,7 @@ var Underscore = _;
 			 */
 			var readComments = function() {
 				jQuery.ajax({
-					url : "/commenter/listcomments.action",
+					url : commenterPath + "/listcomments.action",
 					cache : false,
 					data : "{ 'objectId' : '" + thisCommenterObjectId + "' }",
 					contentType : 'application/json',
@@ -219,7 +219,7 @@ var Underscore = _;
 			 */
 			var saveComment = function(comment) {
 				jQuery.ajax({
-					url : "/commenter/savecomment.action",
+					url : commenterPath + "/savecomment.action",
 					cache : false,
 					data : JSON.stringify({ 'comment' : comment }),
 					contentType : 'application/json',
