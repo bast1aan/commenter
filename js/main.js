@@ -171,196 +171,196 @@ if (!thisCommenterObjectId) {
 
 var Underscore = _;
 
-			var Comment = Backbone.Model.extend({
-				id : null,
-				parentId : null,
-				objectId : null,
-				name : null,
-				email : null,
-				text : null,
-				createdAt : null,
-				updatedAt : null
-			});
-			
-			var CommentCollection = Backbone.Collection.extend({model : Comment});
+var Comment = Backbone.Model.extend({
+	id : null,
+	parentId : null,
+	objectId : null,
+	name : null,
+	email : null,
+	text : null,
+	createdAt : null,
+	updatedAt : null
+});
 
-			var comments = new CommentCollection();
+var CommentCollection = Backbone.Collection.extend({model : Comment});
 
-			// For IE8 and IE9
-			jQuery.support.cors = true;
+var comments = new CommentCollection();
 
-			/**
-			 * Function to retrieve the comments and populate comment collection
-			 */
-			var readComments = function() {
-				jQuery.ajax({
-					url : commenterPath + "/listcomments.action",
-					cache : false,
-					data : "{ 'objectId' : '" + thisCommenterObjectId + "' }",
-					contentType : 'application/json',
-					type : 'POST',
-					dataType : 'json',
-					crossDomain : true,
-					success : function(data){
-						if (data.comments) {
-							comments.reset(data.comments);
-						}
-					},
-					error : function(jqHXR, textStatus, e) {
-						throw "Error executing request: " + textStatus + " : " + e;
-					}
-				});
+// For IE8 and IE9
+jQuery.support.cors = true;
 
+/**
+ * Function to retrieve the comments and populate comment collection
+ */
+var readComments = function() {
+	jQuery.ajax({
+		url : commenterPath + "/listcomments.action",
+		cache : false,
+		data : "{ 'objectId' : '" + thisCommenterObjectId + "' }",
+		contentType : 'application/json',
+		type : 'POST',
+		dataType : 'json',
+		crossDomain : true,
+		success : function(data){
+			if (data.comments) {
+				comments.reset(data.comments);
 			}
-		
-			/**
-			 * Save the comment to the backend.
-			 * @param Comment comment
-			 */
-			var saveComment = function(comment) {
-				jQuery.ajax({
-					url : commenterPath + "/savecomment.action",
-					cache : false,
-					data : JSON.stringify({ 'comment' : comment }),
-					contentType : 'application/json',
-					type : 'POST',
-					dataType : 'json',
-					crossDomain : true,
-					success : function(data){
-						if (data.comment) {
-							// re-read the comment list
-							readComments();
-						}
-					},
-					error : function(jqHXR, textStatus, e) {
-						throw "Error executing request: " + textStatus + " : " + e;
-					}
-				});
-				
-			};
-			
-			var FormView = Backbone.View.extend({
-				
-				initialize : function() {
-					this.listenTo(this.model, "change", this.render);
-				},
-				
-				cancelButton : false,
-				
-				setCancelButton : function(enable) {
-					this.cancelButton = enable;
-					this.render();
-				},
-				
-				cancelButtonListener : function(){},
-				
-				render : function() {
-					var comment = this.model;
-					this.$el.html(Underscore.template(form, {comment : comment}));
-					var $form = this.$el.find('#commenter-form');
-					if (this.cancelButton) {
-						var cancelButtonJQ = $(document.createElement('button'));
-						cancelButtonJQ.text("Cancel");
-						var formNode = $form[0];
-						for (var i = 0; i < formNode.length; i++) {
-							if (formNode[i].type && formNode[i].type == 'submit') {
-								formNode[i].parentNode.appendChild(cancelButtonJQ[0]);
-							}
-						}
-						cancelButtonJQ.on('click', this.cancelButtonListener);
-					}
-					$form.submit(function(e) {
-						// gather form values
-						var formValues = {};
-						for (var i = 0; i < e.currentTarget.length; i++) {
-							var element = e.currentTarget[i];
-							if (element.name && element.name.length > 0 && element.value && element.value.length > 0)
-								formValues[element.name] = element.value;
-						}
-						// set model with gathered form values
-						comment.set(formValues);
-						saveComment(comment);
-						readComments();
-						return false;
-					});
-					return this;
-				},
-				
-				attachToContainer : function() {
-					formComment.set('parentId', null);
-					$commenterContainer.append(this.$el);
+		},
+		error : function(jqHXR, textStatus, e) {
+			throw "Error executing request: " + textStatus + " : " + e;
+		}
+	});
+
+}
+
+/**
+ * Save the comment to the backend.
+ * @param Comment comment
+ */
+var saveComment = function(comment) {
+	jQuery.ajax({
+		url : commenterPath + "/savecomment.action",
+		cache : false,
+		data : JSON.stringify({ 'comment' : comment }),
+		contentType : 'application/json',
+		type : 'POST',
+		dataType : 'json',
+		crossDomain : true,
+		success : function(data){
+			if (data.comment) {
+				// re-read the comment list
+				readComments();
+			}
+		},
+		error : function(jqHXR, textStatus, e) {
+			throw "Error executing request: " + textStatus + " : " + e;
+		}
+	});
+
+};
+
+var FormView = Backbone.View.extend({
+
+	initialize : function() {
+		this.listenTo(this.model, "change", this.render);
+	},
+
+	cancelButton : false,
+
+	setCancelButton : function(enable) {
+		this.cancelButton = enable;
+		this.render();
+	},
+
+	cancelButtonListener : function(){},
+
+	render : function() {
+		var comment = this.model;
+		this.$el.html(Underscore.template(form, {comment : comment}));
+		var $form = this.$el.find('#commenter-form');
+		if (this.cancelButton) {
+			var cancelButtonJQ = $(document.createElement('button'));
+			cancelButtonJQ.text("Cancel");
+			var formNode = $form[0];
+			for (var i = 0; i < formNode.length; i++) {
+				if (formNode[i].type && formNode[i].type == 'submit') {
+					formNode[i].parentNode.appendChild(cancelButtonJQ[0]);
 				}
-			});
-			
-			var formComment = new Comment({ objectId : thisCommenterObjectId });
-			var formView = new FormView({model : formComment});
-			
-			var ListView = Backbone.View.extend({
-				
-				initialize : function() {
-					this.listenTo(this.collection, "reset", this.render);
-				},
-				
-				render : function() {
-					// sort collection by creation date
-					var sortedCollection = this.collection.sortBy(function(comment) {
-							return comment.get('createdAt');
-					});
-					
-					// group collection by parent ID to create tree structure
-					var groupedCollection = _.groupBy(sortedCollection, function(comment) {
-							return comment.get('parentId');
-						});
-					
-					this.$el.html(this.doRender(sortedCollection, groupedCollection, []));
-					
-					// after rendering list, attach form to bottom of container
-					formView.attachToContainer();
-					
-					return this;
-				},
-				
-				doRender : function(comments, groupedComments, alreadyProcessed, render) {
-					if (render == null) {
-						render = this.doRender;
-					}
-					return Underscore.template(list, { 
-						comments : comments,
-						commentsByParentId : groupedComments,
-						render : render,
-						alreadyProcessed : alreadyProcessed
-					});
-				},
-				
-				events: {
-					"click .reply" : 'replyOnComment'
-				},
-				
-				replyOnComment : function(e) {
-					var buttonNode = e.currentTarget;
-					var parentId = buttonNode.id.substring("replyOn".length);
-					formView.$el.insertBefore($(buttonNode));
-					formView.cancelButtonListener = function(e) {
-						$(buttonNode).show();
-						formView.cancelButton = false;
-						formView.attachToContainer();
-						return false;
-					};
-					formView.cancelButton = true;
-
-					formComment.set('parentId', parentId);
-					$('.reply').show();
-					$(buttonNode).hide();
-					formView.$el.find('h3').text('Reply');
-				}
-				
-				
-			});
-
-			var listView = new ListView({ collection : comments});
-			$commenterContainer.append(listView.$el);
-
-			
+			}
+			cancelButtonJQ.on('click', this.cancelButtonListener);
+		}
+		$form.submit(function(e) {
+			// gather form values
+			var formValues = {};
+			for (var i = 0; i < e.currentTarget.length; i++) {
+				var element = e.currentTarget[i];
+				if (element.name && element.name.length > 0 && element.value && element.value.length > 0)
+					formValues[element.name] = element.value;
+			}
+			// set model with gathered form values
+			comment.set(formValues);
+			saveComment(comment);
 			readComments();
-			
+			return false;
+		});
+		return this;
+	},
+
+	attachToContainer : function() {
+		formComment.set('parentId', null);
+		$commenterContainer.append(this.$el);
+	}
+});
+
+var formComment = new Comment({ objectId : thisCommenterObjectId });
+var formView = new FormView({model : formComment});
+
+var ListView = Backbone.View.extend({
+
+	initialize : function() {
+		this.listenTo(this.collection, "reset", this.render);
+	},
+
+	render : function() {
+		// sort collection by creation date
+		var sortedCollection = this.collection.sortBy(function(comment) {
+				return comment.get('createdAt');
+		});
+
+		// group collection by parent ID to create tree structure
+		var groupedCollection = _.groupBy(sortedCollection, function(comment) {
+				return comment.get('parentId');
+			});
+
+		this.$el.html(this.doRender(sortedCollection, groupedCollection, []));
+
+		// after rendering list, attach form to bottom of container
+		formView.attachToContainer();
+
+		return this;
+	},
+
+	doRender : function(comments, groupedComments, alreadyProcessed, render) {
+		if (render == null) {
+			render = this.doRender;
+		}
+		return Underscore.template(list, { 
+			comments : comments,
+			commentsByParentId : groupedComments,
+			render : render,
+			alreadyProcessed : alreadyProcessed
+		});
+	},
+
+	events: {
+		"click .reply" : 'replyOnComment'
+	},
+
+	replyOnComment : function(e) {
+		var buttonNode = e.currentTarget;
+		var parentId = buttonNode.id.substring("replyOn".length);
+		formView.$el.insertBefore($(buttonNode));
+		formView.cancelButtonListener = function(e) {
+			$(buttonNode).show();
+			formView.cancelButton = false;
 			formView.attachToContainer();
+			return false;
+		};
+		formView.cancelButton = true;
+
+		formComment.set('parentId', parentId);
+		$('.reply').show();
+		$(buttonNode).hide();
+		formView.$el.find('h3').text('Reply');
+	}
+
+
+});
+
+var listView = new ListView({ collection : comments});
+$commenterContainer.append(listView.$el);
+
+
+readComments();
+
+formView.attachToContainer();
