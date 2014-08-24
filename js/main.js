@@ -18,6 +18,16 @@
 
 "use strict";
 
+"include ../dependencies/js/jquery.js";
+"include ../dependencies/js/underscore.js";
+"include ../dependencies/js/backbone.js";
+
+var form;
+"read templates/form.html into form";
+
+var list;
+"read templates/list.html into list";
+
 /**
  * Display date
  * @param Date Date
@@ -159,17 +169,7 @@ if (!thisCommenterObjectId) {
 	thisCommenterObjectId = 'testobject';
 }
 
-
-// load require with main stuff of this application
-$.getScript(srcpath + "/require.js")
-	.done(function(script, textStatus) {
-		requirejs.config({ 'baseUrl' : srcpath});
-		require([
-			"underscore", 
-			"backbone", 
-			"text!templates/form.html?v=2",
-			"text!templates/list.html?v=1"
-		], function(Underscore, Backbone, form, list) {
+var Underscore = _;
 
 			var Comment = Backbone.Model.extend({
 				id : null,
@@ -364,9 +364,3 @@ $.getScript(srcpath + "/require.js")
 			readComments();
 			
 			formView.attachToContainer();
-			
-		});
-	})
-	.fail(function( jqxhr, settings, exception ) {
-		throw "Error loading require.js"
-	});
