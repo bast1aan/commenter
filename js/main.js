@@ -282,6 +282,7 @@ var FormView = Backbone.View.extend({
 			// set model with gathered form values
 			comment.set(formValues);
 			saveComment(comment);
+			comment.set('text', '');
 			readComments();
 			return false;
 		});
