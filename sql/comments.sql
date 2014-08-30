@@ -27,3 +27,6 @@ ALTER TABLE comments
 
 ALTER TABLE comments
    ADD COLUMN updated_at timestamp without time zone;
+
+ALTER TABLE comments
+   ADD COLUMN ip inet;

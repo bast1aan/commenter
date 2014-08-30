@@ -34,6 +34,7 @@ public class Settings {
 	public final static String DSN = "dsn";
 	public final static String USERNAME = "username";
 	public final static String PASSWORD = "password";
+	public final static String REMOTE_ADDR_HEADER = "remote_addr_header";
 	
 	private static Settings instance;
 	

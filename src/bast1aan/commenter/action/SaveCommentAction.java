@@ -20,17 +20,33 @@ package bast1aan.commenter.action;
 
 import bast1aan.commenter.Comment;
 import bast1aan.commenter.Dao;
+import bast1aan.commenter.Settings;
 import com.opensymphony.xwork2.ActionSupport;
+import javax.servlet.http.HttpServletRequest;
+import org.apache.struts2.interceptor.ServletRequestAware;
 
-public class SaveCommentAction extends ActionSupport {
+public class SaveCommentAction extends ActionSupport implements ServletRequestAware {
 
 	private Comment comment;
+
+	private HttpServletRequest request;
 	
 	@Override
 	public String execute() throws Exception {
-		Dao dao = Dao.getInstance();
+		
 		if (comment != null) {
-			dao.saveComment(comment);
+			Dao dao = Dao.getInstance();
+			String remoteAddrHeader = Settings.getInstance().get(Settings.REMOTE_ADDR_HEADER);
+			//LOG.info(String.format("remoteAddrHeader: %s", remoteAddrHeader));
+			//LOG.info(String.format("request: %s", request.toString()));
+			String remoteAddr;
+			if (remoteAddrHeader == null) {
+				remoteAddr = request.getRemoteAddr();
+			} else {
+				remoteAddr = request.getHeader(remoteAddrHeader);
+			}
+			
+			dao.saveComment(comment, remoteAddr);
 		}
 		return SUCCESS;
 	}
@@ -43,6 +59,10 @@ public class SaveCommentAction extends ActionSupport {
 		this.comment = comment;
 	}
 	
+	@Override
+	public void setServletRequest(HttpServletRequest request) {
+		this.request = request;
+	}
 	
 	
 }
