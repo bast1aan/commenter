@@ -336,9 +336,14 @@ if ($commenterContainer instanceof jQuery) {
 	var ListView = Backbone.View.extend({
 
 		initialize : function() {
-			this.listenTo(this.collection, "reset", this.render);
+			this.listenTo(this.collection, "reset", this.resetListener);
 		},
 
+		resetListener : function() {
+			this.render();
+			countComments();
+		},
+		
 		render : function() {
 			// sort collection by creation date
 			var sortedCollection = this.collection.sortBy(function(comment) {
@@ -354,8 +359,6 @@ if ($commenterContainer instanceof jQuery) {
 
 			// after rendering list, attach form to bottom of container
 			formView.attachToContainer();
-
-			countComments();
 
 			return this;
 		},
