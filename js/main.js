@@ -366,4 +366,27 @@ if ($commenterContainer instanceof jQuery) {
 
 	formView.attachToContainer();
 }
-	
+
+$('.commenter-count').each(function(i, e) {
+	var countContainer = $(e);
+	var objectId = countContainer.data('objectId');
+	if (typeof objectId == 'string' && objectId.length > 0) {
+		jQuery.ajax({
+			url : commenterPath + "/countcomments.action",
+			cache : false,
+			data : "{ 'objectId' : '" + objectId + "' }",
+			contentType : 'application/json',
+			type : 'POST',
+			dataType : 'json',
+			crossDomain : true,
+			success : function(data){
+				if (typeof data.amount == 'number') {
+					countContainer.text(data.amount);
+				}
+			},
+			error : function(jqHXR, textStatus, e) {
+				throw new Error("Error executing request: " + textStatus + " : " + e);
+			}
+		});
+	}
+});
