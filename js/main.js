@@ -171,6 +171,7 @@ var countComments = function() {
 				success : function(data){
 					if (typeof data.amount == 'number') {
 						countContainer.text(data.amount);
+						countContainer.change();
 					}
 				},
 				error : function(jqHXR, textStatus, e) {
