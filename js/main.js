@@ -115,7 +115,7 @@ $('script').each(function(i, e) {
 	var path = $e.attr('src');
 	var match;
 	if (path && (match = path.match(/js\/commenter\.js/)) !== null && match.length > 0) {
-		commenterPath = path.replace(/(.*)js\/commenter\.js/, "$1");
+		commenterPath = path.replace(/(.*)js\/commenter\.js.*/, "$1");
 		if (commenterPath.length > 0) {
 			commenterPath = commenterPath.substring(0, commenterPath.length - 1); // remove trailing slash
 		} else {
