@@ -145,6 +145,43 @@ if (typeof $commenterContainer == "string") {
 	$commenterContainer = $($commenterContainer);
 }
 
+var countComments = function() {
+	$('.commenter-count').each(function() {
+		var countContainer = $(this);
+		var objectId = countContainer.data('objectId');
+		if (!objectId) {
+			// find objectId on its first parent
+			countContainer.parents().each(function() {
+				if (typeof objectId == 'string' && objectId.length > 0) return;
+				var tmpObjectId = $(this).data('objectId');
+				if (typeof tmpObjectId == 'string' && tmpObjectId.length > 0) {
+					objectId = tmpObjectId;
+				}
+			});
+		}
+		if (typeof objectId == 'string' && objectId.length > 0) {
+			jQuery.ajax({
+				url : commenterPath + "/countcomments.action",
+				cache : false,
+				data : "{ 'objectId' : '" + objectId + "' }",
+				contentType : 'application/json',
+				type : 'POST',
+				dataType : 'json',
+				crossDomain : true,
+				success : function(data){
+					if (typeof data.amount == 'number') {
+						countContainer.text(data.amount);
+					}
+				},
+				error : function(jqHXR, textStatus, e) {
+					throw new Error("Error executing request: " + textStatus + " : " + e);
+				}
+			});
+		}
+	});
+};
+
+
 if ($commenterContainer instanceof jQuery) {
 
 	if (!$commenterContainer.hasClass('commenter-container')) {
@@ -318,6 +355,8 @@ if ($commenterContainer instanceof jQuery) {
 			// after rendering list, attach form to bottom of container
 			formView.attachToContainer();
 
+			countComments();
+
 			return this;
 		},
 
@@ -367,36 +406,4 @@ if ($commenterContainer instanceof jQuery) {
 	formView.attachToContainer();
 }
 
-$('.commenter-count').each(function(i, e) {
-	var countContainer = $(e);
-	var objectId = countContainer.data('objectId');
-	if (!objectId) {
-		// find objectId on its first parent
-		countContainer.parents().each(function() {
-			if (typeof objectId == 'string' && objectId.length > 0) return;
-			var tmpObjectId = $(this).data('objectId');
-			if (typeof tmpObjectId == 'string' && tmpObjectId.length > 0) {
-				objectId = tmpObjectId;
-			}
-		});
-	}
-	if (typeof objectId == 'string' && objectId.length > 0) {
-		jQuery.ajax({
-			url : commenterPath + "/countcomments.action",
-			cache : false,
-			data : "{ 'objectId' : '" + objectId + "' }",
-			contentType : 'application/json',
-			type : 'POST',
-			dataType : 'json',
-			crossDomain : true,
-			success : function(data){
-				if (typeof data.amount == 'number') {
-					countContainer.text(data.amount);
-				}
-			},
-			error : function(jqHXR, textStatus, e) {
-				throw new Error("Error executing request: " + textStatus + " : " + e);
-			}
-		});
-	}
-});
+countComments();
