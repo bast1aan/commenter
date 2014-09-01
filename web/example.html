@@ -9,5 +9,22 @@
 			<div class="commenter-count-container"><span class="commenter-count">0</span> comments total</div>
 		</div>
 		<script data-container="commenter-container" src="js/commenter.js" type="text/javascript"></script>
+		<!-- don't show comment counter if there are no comments -->
+		<script type="text/javascript">
+			$('.commenter-count-container').each(function() {
+				$container = $(this);
+				$container.find('.commenter-count').each(function(){
+					var checkIfZero = function(){
+						if ($(this).text() > 0) {
+							$container.show();
+						} else {
+							$container.hide();
+						}
+					};
+					$(this).change(checkIfZero);
+					checkIfZero();
+				});
+			});
+		</script>
 	</body>
 </html>
