@@ -408,6 +408,6 @@ if ($commenterContainer instanceof jQuery) {
 	readComments();
 
 	formView.attachToContainer();
+} else {
+	countComments();
 }
-
-countComments();
