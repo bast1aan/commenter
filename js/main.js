@@ -370,6 +370,16 @@ if ($commenterContainer instanceof jQuery) {
 $('.commenter-count').each(function(i, e) {
 	var countContainer = $(e);
 	var objectId = countContainer.data('objectId');
+	if (!objectId) {
+		// find objectId on its first parent
+		countContainer.parents().each(function() {
+			if (typeof objectId == 'string' && objectId.length > 0) return;
+			var tmpObjectId = $(this).data('objectId');
+			if (typeof tmpObjectId == 'string' && tmpObjectId.length > 0) {
+				objectId = tmpObjectId;
+			}
+		});
+	}
 	if (typeof objectId == 'string' && objectId.length > 0) {
 		jQuery.ajax({
 			url : commenterPath + "/countcomments.action",
