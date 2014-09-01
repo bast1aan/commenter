@@ -137,4 +137,26 @@ public class Dao {
 		stmt.setString(4, comment.getEmail());
 		stmt.setString(5, comment.getText());
 	}
+	
+	public int countComments(String objectId) {
+		
+		int amount = 0;
+		
+		String query = "SELECT COUNT(*) AS cnt FROM comments WHERE object_id = ?";
+		
+		try {
+			PreparedStatement stmt = conn.prepareStatement(query);
+			stmt.setString(1, objectId);
+			ResultSet result = stmt.executeQuery();
+			if (result.next()) {
+				amount = result.getInt("cnt");
+			}
+			result.close();
+		} catch (SQLException e) {
+			throw new CommenterException(String.format("Error executing query: %s", query), e);
+		}
+		
+		return amount;
+	}
+
 }

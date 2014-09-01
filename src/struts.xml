@@ -70,5 +70,17 @@
 			</interceptor-ref>
 			<interceptor-ref name="defaultStack"></interceptor-ref>
 		</action>
+		<action name="countcomments" class="bast1aan.commenter.action.CountCommentsAction" method="execute">
+			<result type="json">
+				<param name="includeProperties">
+					amount
+				</param>
+			</result>
+			<interceptor-ref name="json">
+				<param name="includeProperties">
+					objectId
+				</param>
+			</interceptor-ref>
+		</action>
 	</package>
 </struts>
