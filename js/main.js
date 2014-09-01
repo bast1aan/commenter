@@ -18,9 +18,15 @@
 
 "use strict";
 
+if (typeof $ == "undefined") {
 "include ../dependencies/js/jquery.js";
+}
+if (typeof _ == "undefined") {
 "include ../dependencies/js/underscore.js";
+}
+if (typeof Backbone == "undefined") {
 "include ../dependencies/js/backbone.js";
+}
 
 var form;
 "read templates/form.html into form";
