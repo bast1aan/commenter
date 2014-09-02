@@ -21,17 +21,27 @@ package bast1aan.commenter.action;
 import bast1aan.commenter.Dao;
 import static com.opensymphony.xwork2.Action.SUCCESS;
 import com.opensymphony.xwork2.ActionSupport;
+import java.util.List;
+import java.util.Map;
 
 public class CountCommentsAction extends ActionSupport {
 
 	private int amount;
+	
+	private Map<String, Integer> amounts;
+	
+	private List<String> objectIds = null;
 	
 	private String objectId;
 
 	@Override
 	public String execute() throws Exception {
 		Dao dao = Dao.getInstance();
-		amount = dao.countComments(objectId);
+		if (objectIds != null && objectIds.size() > 0) {
+			amounts = dao.countComments(objectIds);
+		} else if (objectId != null) {
+			amount = dao.countComments(objectId);
+		}
 		return SUCCESS;
 	}
 
@@ -43,4 +53,12 @@ public class CountCommentsAction extends ActionSupport {
 		this.objectId = objectId;
 	}
 	
+	public void setObjectIds(List<String> objectIds) {
+		this.objectIds = objectIds;
+	}
+	
+	public Map<String, Integer> getAmounts() {
+		return amounts;
+	}
+
 }

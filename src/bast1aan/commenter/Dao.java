@@ -25,7 +25,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Dao {
 	
@@ -157,6 +159,40 @@ public class Dao {
 		}
 		
 		return amount;
+	}
+	
+	public Map<String, Integer> countComments(String[] objectIds) {
+		Map<String, Integer> counts = new HashMap<String, Integer>(objectIds.length + 1, 1);
+		
+		StringBuffer query = new StringBuffer("SELECT object_id, COUNT(id) AS cnt FROM comments WHERE object_id IN (");
+		for (int i = 0; i < objectIds.length; i++) {
+			if (i > 0) query.append(',');
+			query.append('?');
+		}
+		query.append(") GROUP BY object_id");
+		
+		try {
+			PreparedStatement stmt = conn.prepareStatement(query.toString());
+			for (int i = 0; i < objectIds.length; i++) {
+				stmt.setString(i + 1, objectIds[i]);
+			}
+			ResultSet result = stmt.executeQuery();
+			
+			while (result.next())
+				counts.put(result.getString("object_id"), result.getInt("cnt"));
+			
+			result.close();
+		} catch (SQLException e) {
+			throw new CommenterException(String.format("Error executing query: %s", query), e);
+		}
+		
+		return counts;
+	}
+	
+	public Map<String, Integer> countComments(List<String> objectIds) {
+		String[] objectIdsArr = new String[objectIds.size()];
+		objectIdsArr = objectIds.toArray(objectIdsArr);
+		return countComments(objectIdsArr);
 	}
 
 }
