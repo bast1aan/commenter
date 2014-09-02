@@ -167,28 +167,30 @@ var countComments = function() {
 			});
 		}
 		if (typeof objectId == 'string' && objectId.length > 0) {
-			countElements[objectId] = countContainer;
+			if (typeof countElements[objectId] == 'undefined')
+				countElements[objectId] = [];
+			countElements[objectId].push(countContainer);
 		}
 	});
-	var request = {objectIds : []};
-	$.each(countElements, function(k) {
-		request.objectIds.push(k);
-	});
+	
 	jQuery.ajax({
 		url : commenterPath + "/countcomments.action",
 		cache : false,
-		data : JSON.stringify(request),
+		data : JSON.stringify({objectIds : Object.keys(countElements)}),
 		contentType : 'application/json',
 		type : 'POST',
 		dataType : 'json',
 		crossDomain : true,
 		success : function(data){
 			if (data.amounts && typeof data.amounts == 'object') {
-				$.each(data.amounts, function(k) {
-					if (countElements[k] instanceof jQuery) {
-						countElements[k].text(data.amounts[k]);
-						// fire change event for possible listeners
-						countElements[k].change();
+				$.each(countElements, function(k) {
+					for (var i = 0; i < countElements[k].length; ++i) {
+						if (typeof data.amounts[k] == 'number') {
+							countElements[k][i].text(data.amounts[k]);
+						} else {
+							countElements[k][i].text('0');
+						}
+						countElements[k][i].change();
 					}
 				});
 			}
