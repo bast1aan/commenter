@@ -152,6 +152,7 @@ if (typeof $commenterContainer == "string") {
 }
 
 var countComments = function() {
+	var countElements = {};
 	$('.commenter-count').each(function() {
 		var countContainer = $(this);
 		var objectId = countContainer.data('objectId');
@@ -166,26 +167,37 @@ var countComments = function() {
 			});
 		}
 		if (typeof objectId == 'string' && objectId.length > 0) {
-			jQuery.ajax({
-				url : commenterPath + "/countcomments.action",
-				cache : false,
-				data : "{ 'objectId' : '" + objectId + "' }",
-				contentType : 'application/json',
-				type : 'POST',
-				dataType : 'json',
-				crossDomain : true,
-				success : function(data){
-					if (typeof data.amount == 'number') {
-						countContainer.text(data.amount);
-						countContainer.change();
-					}
-				},
-				error : function(jqHXR, textStatus, e) {
-					throw new Error("Error executing request: " + textStatus + " : " + e);
-				}
-			});
+			countElements[objectId] = countContainer;
 		}
 	});
+	var request = {objectIds : []};
+	$.each(countElements, function(k) {
+		request.objectIds.push(k);
+	});
+	jQuery.ajax({
+		url : commenterPath + "/countcomments.action",
+		cache : false,
+		data : JSON.stringify(request),
+		contentType : 'application/json',
+		type : 'POST',
+		dataType : 'json',
+		crossDomain : true,
+		success : function(data){
+			if (data.amounts && typeof data.amounts == 'object') {
+				$.each(data.amounts, function(k) {
+					if (countElements[k] instanceof jQuery) {
+						countElements[k].text(data.amounts[k]);
+						// fire change event for possible listeners
+						countElements[k].change();
+					}
+				});
+			}
+		},
+		error : function(jqHXR, textStatus, e) {
+			throw new Error("Error executing request: " + textStatus + " : " + e);
+		}
+	});
+
 };
 
 
