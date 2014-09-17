@@ -56,7 +56,7 @@
 		<mkdir dir="dependencies/js" />
 		<get src="http://backbonejs.org/backbone.js" dest="dependencies/js/backbone.js" />
 		<!-- get underscore.js -->
-		<get src="http://underscorejs.org/underscore.js" dest="dependencies/js/underscore.js" />
+		<get src="https://raw.github.com/jashkenas/underscore/1.6.0/underscore.js" dest="dependencies/js/underscore.js" />
 		<!-- get jquery -->
 		<get src="http://code.jquery.com/jquery-1.11.1.js" dest="dependencies/js/jquery.js" />
 		<!-- get PreprocessJS -->
