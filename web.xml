@@ -51,21 +51,10 @@
 	   <url-pattern>*.action</url-pattern>
 	</filter-mapping>
     
-	<servlet>
-      <servlet-name>HelloWorld</servlet-name>
-      <servlet-class>bast1aan.commenter.HelloWorldServlet</servlet-class>
-    </servlet>
-
     <servlet>
       <servlet-name>Redirect</servlet-name>
       <servlet-class>bast1aan.commenter.RedirectServlet</servlet-class>
     </servlet>
-
-
-    <servlet-mapping>
-        <servlet-name>HelloWorld</servlet-name>
-        <url-pattern>/helloworld</url-pattern>
-    </servlet-mapping>
 
     <servlet-mapping>
         <servlet-name>Redirect</servlet-name>
