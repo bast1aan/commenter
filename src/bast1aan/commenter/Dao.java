@@ -19,7 +19,6 @@
 package bast1aan.commenter;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -40,23 +39,7 @@ public class Dao {
 		return instance;
 	}
 	
-	private Connection conn;
-	
-	public Dao() {
-		Settings settings = Settings.getInstance();
-		try {
-			Class.forName(settings.get(Settings.DRIVER));
-			conn = DriverManager.getConnection(
-					settings.get(Settings.DSN),
-					settings.get(Settings.USERNAME),
-					settings.get(Settings.PASSWORD));
-			
-		} catch (ClassNotFoundException e) {
-			throw new CommenterException("Wrong driver provided or library not present", e);
-		} catch (SQLException e) {
-			throw new CommenterException("Not able to connect with configuration to DB", e);
-		}
-	}
+	private ConnectionManager cm = new ConnectionManager();
 	
 	public List<Comment> getComments(String objectId) {
 		
@@ -65,7 +48,7 @@ public class Dao {
 		String query = "SELECT * FROM comments WHERE object_id = ?";
 		
 		try {
-			PreparedStatement stmt = conn.prepareStatement(query);
+			PreparedStatement stmt = cm.getConnection().prepareStatement(query);
 			stmt.setString(1, objectId);
 			ResultSet result = stmt.executeQuery();
 			while (result.next()) {
@@ -92,6 +75,9 @@ public class Dao {
 	}
 	
 	public void saveComment(Comment comment, String remoteAddr) {
+		
+		Connection conn = cm.getConnection();
+		
 		String query = "";
 		Integer id = comment.getId();
 		
@@ -147,7 +133,7 @@ public class Dao {
 		String query = "SELECT COUNT(*) AS cnt FROM comments WHERE object_id = ?";
 		
 		try {
-			PreparedStatement stmt = conn.prepareStatement(query);
+			PreparedStatement stmt = cm.getConnection().prepareStatement(query);
 			stmt.setString(1, objectId);
 			ResultSet result = stmt.executeQuery();
 			if (result.next()) {
@@ -172,7 +158,7 @@ public class Dao {
 		query.append(") GROUP BY object_id");
 		
 		try {
-			PreparedStatement stmt = conn.prepareStatement(query.toString());
+			PreparedStatement stmt = cm.getConnection().prepareStatement(query.toString());
 			for (int i = 0; i < objectIds.length; i++) {
 				stmt.setString(i + 1, objectIds[i]);
 			}
