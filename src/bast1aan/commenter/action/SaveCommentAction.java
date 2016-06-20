@@ -35,6 +35,11 @@ public class SaveCommentAction extends ActionSupport implements ServletRequestAw
 	public String execute() throws Exception {
 		
 		if (comment != null) {
+                        Integer id = comment.getId();
+                        if (id != null) {
+                            // prevent unauthorized update of existing comments
+                            return ERROR;
+                        }
 			Dao dao = Dao.getInstance();
 			String remoteAddrHeader = Settings.getInstance().get(Settings.REMOTE_ADDR_HEADER);
 			//LOG.info(String.format("remoteAddrHeader: %s", remoteAddrHeader));
