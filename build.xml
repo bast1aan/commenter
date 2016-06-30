@@ -54,14 +54,14 @@
 		
 		<!-- get backbone -->
 		<mkdir dir="dependencies/js" />
-		<get src="http://backbonejs.org/backbone.js" dest="dependencies/js/backbone.js" />
+		<get src="https://raw.githubusercontent.com/jashkenas/backbone/1.1.2/backbone.js" dest="dependencies/js/backbone.js" />
 		<!-- get underscore.js -->
 		<get src="https://raw.github.com/jashkenas/underscore/1.6.0/underscore.js" dest="dependencies/js/underscore.js" />
 		<!-- get jquery -->
 		<get src="http://code.jquery.com/jquery-1.11.1.js" dest="dependencies/js/jquery.js" />
 		<!-- get PreprocessJS -->
 		<get src="https://github.com/bast1aan/preprocess-js/raw/master/PreprocessJS.class" dest="dependencies/PreprocessJS.class" />
-    </target>
+        </target>
 
 	<target name="clean-resolve">
 		<delete dir="dependencies" />
