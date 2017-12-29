@@ -40,11 +40,7 @@
 					comments\[\d+\]\..*
 				</param>
 			</result>
-			<interceptor-ref name="json">
-				<param name="includeProperties">
-					objectId
-				</param>
-			</interceptor-ref>
+			<interceptor-ref name="servletConfig" />
 		</action>
 		<action name="savecomment" class="bast1aan.commenter.action.SaveCommentAction" method="execute">
 			<result type="json">

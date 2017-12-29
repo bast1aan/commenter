@@ -20,20 +20,23 @@ package bast1aan.commenter.action;
 
 import bast1aan.commenter.Comment;
 import bast1aan.commenter.Dao;
-import com.opensymphony.xwork2.ActionSupport;
+import static com.opensymphony.xwork2.Action.SUCCESS;
 import java.util.List;
+import javax.servlet.http.HttpServletRequest;
+import org.apache.struts2.interceptor.ServletRequestAware;
 
-public class ListCommentsAction extends ActionSupport {
+public class ListCommentsAction implements ServletRequestAware {
 
+	private HttpServletRequest request;
 	private List<Comment> comments;
 	
-	private String objectId;
-	
-	@Override
 	public String execute() throws Exception {
+		
+		String objectId = request.getParameter("objectId");
 		Dao dao = Dao.getInstance();
 		//LOG.info("object id : " + objectId, objectId);
-		comments = dao.getComments(objectId);
+		if (objectId != null && !"".equals(objectId.trim()))
+			comments = dao.getComments(objectId);
 		//LOG.info("comments count : " + Integer.toString(comments.size()));
 		//LOG.info("text : " + comments.get(0).getText());
 		return SUCCESS;
@@ -43,8 +46,9 @@ public class ListCommentsAction extends ActionSupport {
 		return comments;
 	}
 
-	public void setObjectId(String objectId) {
-		this.objectId = objectId;
+	@Override
+	public void setServletRequest(HttpServletRequest request) {
+		this.request = request;
 	}
 	
 }

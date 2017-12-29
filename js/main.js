@@ -252,12 +252,9 @@ if ($commenterContainer instanceof jQuery) {
 	 */
 	var readComments = function() {
 		jQuery.ajax({
-			url : commenterPath + "/listcomments.action",
+			url : commenterPath + "/listcomments.action?objectId=" + thisCommenterObjectId,
 			cache : false,
-			data : "{ 'objectId' : '" + thisCommenterObjectId + "' }",
-			contentType : 'application/json',
-			type : 'POST',
-			dataType : 'json',
+			type : 'GET',
 			crossDomain : true,
 			success : function(data){
 				if (data.comments) {
