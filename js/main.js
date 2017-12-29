@@ -173,13 +173,15 @@ var countComments = function() {
 		}
 	});
 	
+	var countElementsQStrArr = []
+	var countElementsKeys = Object.keys(countElements)
+	for (var i in countElementsKeys) {
+		countElementsQStrArr.push("objectId=" + countElementsKeys[i])
+	}
 	jQuery.ajax({
-		url : commenterPath + "/countcomments.action",
+		url : commenterPath + "/countcomments.action?" + countElementsQStrArr.join('&'),
 		cache : false,
-		data : JSON.stringify({objectIds : Object.keys(countElements)}),
-		contentType : 'application/json',
-		type : 'POST',
-		dataType : 'json',
+		type : 'GET',
 		crossDomain : true,
 		success : function(data){
 			if (data.amounts && typeof data.amounts == 'object') {

@@ -20,45 +20,32 @@ package bast1aan.commenter.action;
 
 import bast1aan.commenter.Dao;
 import static com.opensymphony.xwork2.Action.SUCCESS;
-import com.opensymphony.xwork2.ActionSupport;
 import java.util.List;
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import org.apache.struts2.interceptor.ServletRequestAware;
 
-public class CountCommentsAction extends ActionSupport {
+public class CountCommentsAction implements ServletRequestAware {
 
-	private int amount;
+	private HttpServletRequest request;
 	
 	private Map<String, Integer> amounts;
 	
-	private List<String> objectIds = null;
-	
-	private String objectId;
-
-	@Override
 	public String execute() throws Exception {
 		Dao dao = Dao.getInstance();
-		if (objectIds != null && objectIds.size() > 0) {
+		String[] objectIds = request.getParameterValues("objectId");
+		if (objectIds != null && objectIds.length > 0) {
 			amounts = dao.countComments(objectIds);
-		} else if (objectId != null) {
-			amount = dao.countComments(objectId);
 		}
 		return SUCCESS;
 	}
 
-	public int getAmount() {
-		return amount;
-	}
-
-	public void setObjectId(String objectId) {
-		this.objectId = objectId;
-	}
-	
-	public void setObjectIds(List<String> objectIds) {
-		this.objectIds = objectIds;
-	}
-	
 	public Map<String, Integer> getAmounts() {
 		return amounts;
 	}
 
+	@Override
+	public void setServletRequest(HttpServletRequest request) {
+		this.request = request;
+	}
 }
