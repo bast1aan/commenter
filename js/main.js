@@ -395,7 +395,8 @@ if ($commenterContainer instanceof jQuery) {
 		},
 
 		events: {
-			"click .reply" : 'replyOnComment'
+			"click .reply" : 'replyOnComment',
+			"click .edit" : 'editComment'
 		},
 
 		replyOnComment : function(e) {
@@ -414,7 +415,26 @@ if ($commenterContainer instanceof jQuery) {
 			$('.reply').show();
 			$(buttonNode).hide();
 			formView.$el.find('h3').text('Reply');
+		},
+		
+		editComment : function(e) {
+			var buttonNode = e.currentTarget;
+			var $allButtonsInNode = $(buttonNode.parentElement).find('.reply, .edit');
+			var id = buttonNode.id.substring("edit".length);
+			formView.$el.insertBefore($(buttonNode));
+			formView.cancelButtonListener = function(e) {
+				$allButtonsInNode.show();
+				formView.cancelButton = false;
+				formView.attachToContainer();
+				formComment.clear();
+				return false;
+			};
+			formView.cancelButton = true;
+
+			formComment.set(this.collection.get(id).toJSON());
+			$allButtonsInNode.hide();
 		}
+
 
 
 	});
