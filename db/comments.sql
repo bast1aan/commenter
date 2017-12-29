@@ -30,3 +30,6 @@ ALTER TABLE comments
 
 ALTER TABLE comments
    ADD COLUMN ip inet;
+
+ALTER TABLE comments
+   ADD COLUMN indent character(32);

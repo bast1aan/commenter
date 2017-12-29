@@ -74,7 +74,7 @@ public class Dao {
 		return comments;
 	}
 	
-	public void saveComment(Comment comment, String remoteAddr) {
+	public void saveComment(Comment comment, String remoteAddr, String indent) {
 		
 		Connection conn = cm.getConnection();
 		
@@ -86,17 +86,18 @@ public class Dao {
 		try {
 			if (id != null) {
 				//.update needed
-				query = "UPDATE comments SET parent_id = ?, object_id = ?, name = ?, email = ?, text = ?, ip = ?::inet, updated_at = now() WHERE id = ?";
+				query = "UPDATE comments SET parent_id = ?, object_id = ?, name = ?, email = ?, text = ?, ip = ?::inet, updated_at = now(), indent = ? WHERE id = ?";
 				stmt = conn.prepareStatement(query);
 			} else {
-				query = "INSERT INTO comments (parent_id, object_id, name, email, text, ip, created_at, updated_at) VALUES ( ?, ?, ?, ?, ?, ?::inet, now(), now() )";
+				query = "INSERT INTO comments (parent_id, object_id, name, email, text, ip, created_at, updated_at, indent) VALUES ( ?, ?, ?, ?, ?, ?::inet, now(), now(), ?)";
 				stmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
 			}
 			
 			setCommentToStatement(comment, stmt);
 			stmt.setString(6, remoteAddr);
+			stmt.setString(7, indent);
 			if (id != null) { // update
-				stmt.setLong(7, id);
+				stmt.setLong(8, id);
 			}
 			int affected = stmt.executeUpdate();
 			
