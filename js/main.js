@@ -180,7 +180,6 @@ var countComments = function() {
 	}
 	jQuery.ajax({
 		url : commenterPath + "/countcomments.action?" + countElementsQStrArr.join('&'),
-		cache : false,
 		type : 'GET',
 		crossDomain : true,
 		success : function(data){
@@ -255,7 +254,6 @@ if ($commenterContainer instanceof jQuery) {
 	var readComments = function() {
 		jQuery.ajax({
 			url : commenterPath + "/listcomments.action?objectId=" + thisCommenterObjectId,
-			cache : false,
 			type : 'GET',
 			crossDomain : true,
 			success : function(data){
