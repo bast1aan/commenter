@@ -279,7 +279,7 @@ if ($commenterContainer instanceof jQuery) {
 			cache : false,
 			data : JSON.stringify({ 'comment' : comment }),
 			contentType : 'application/json',
-			type : 'POST',
+			type : comment.get('id') ? 'PUT' : 'POST',
 			dataType : 'json',
 			crossDomain : true,
 			success : function(data){
