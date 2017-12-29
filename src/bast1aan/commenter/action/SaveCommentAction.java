@@ -21,26 +21,20 @@ package bast1aan.commenter.action;
 import bast1aan.commenter.Comment;
 import bast1aan.commenter.Dao;
 import bast1aan.commenter.Settings;
-import com.opensymphony.xwork2.ActionSupport;
+import static com.opensymphony.xwork2.Action.SUCCESS;
+import static com.opensymphony.xwork2.Action.ERROR;
 import java.math.BigInteger;
 import java.util.Random;
 import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.struts2.interceptor.ServletResponseAware;
-import org.apache.struts2.interceptor.ServletRequestAware;
 
-public class SaveCommentAction extends ActionSupport implements ServletRequestAware, ServletResponseAware {
+public class SaveCommentAction extends BaseAction implements ServletResponseAware {
 
-	private static final String COOKIE_NAME = "indent";
-	
 	private Comment comment;
 
-	private HttpServletRequest request;
-	
 	private HttpServletResponse response;
 	
-	@Override
 	public String execute() throws Exception {
 		String indent = getIndent();
 		
@@ -81,27 +75,10 @@ public class SaveCommentAction extends ActionSupport implements ServletRequestAw
 	}
 	
 	@Override
-	public void setServletRequest(HttpServletRequest request) {
-		this.request = request;
-	}
-
-	@Override
 	public void setServletResponse(HttpServletResponse response) {
 		this.response = response;
 	}
 	
-	private String getIndent() {
-		String indent = null;
-		for (Cookie cookie : request.getCookies()) {
-			if (cookie.getName().equals(COOKIE_NAME)) {
-				indent = cookie.getValue();
-			}
-		}
-		if (indent != null && indent.length() > 10 && indent.length() <= 32)
-			return indent;
-		return null;
-	}
-
 	private void writeNewIndent(String indent) {
 		Cookie cookie = new Cookie(COOKIE_NAME, indent);
 		if (request.getScheme().equals("https"))
