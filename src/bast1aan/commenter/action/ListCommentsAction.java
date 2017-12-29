@@ -22,9 +22,12 @@ import bast1aan.commenter.Comment;
 import bast1aan.commenter.Dao;
 import static com.opensymphony.xwork2.Action.SUCCESS;
 import java.util.List;
+import javax.servlet.http.HttpServletResponse;
+import org.apache.struts2.interceptor.ServletResponseAware;
 
-public class ListCommentsAction extends BaseAction {
+public class ListCommentsAction extends BaseAction implements ServletResponseAware {
 
+	private HttpServletResponse response;
 	private List<Comment> comments;
 	
 	public String execute() throws Exception {
@@ -32,8 +35,10 @@ public class ListCommentsAction extends BaseAction {
 		String objectId = request.getParameter("objectId");
 		Dao dao = Dao.getInstance();
 		//LOG.info("object id : " + objectId, objectId);
-		if (objectId != null && !"".equals(objectId.trim()))
+		if (objectId != null && !"".equals(objectId.trim())) {
 			comments = dao.getComments(objectId, getIndent());
+			response.setHeader("Cache-Control", "private");
+		}
 		//LOG.info("comments count : " + Integer.toString(comments.size()));
 		//LOG.info("text : " + comments.get(0).getText());
 		return SUCCESS;
@@ -41,6 +46,11 @@ public class ListCommentsAction extends BaseAction {
 
 	public List<Comment> getComments() {
 		return comments;
+	}
+
+	@Override
+	public void setServletResponse(HttpServletResponse response) {
+		this.response = response;
 	}
 
 }
