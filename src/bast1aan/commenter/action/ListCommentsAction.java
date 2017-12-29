@@ -22,12 +22,9 @@ import bast1aan.commenter.Comment;
 import bast1aan.commenter.Dao;
 import static com.opensymphony.xwork2.Action.SUCCESS;
 import java.util.List;
-import javax.servlet.http.HttpServletRequest;
-import org.apache.struts2.interceptor.ServletRequestAware;
 
-public class ListCommentsAction implements ServletRequestAware {
+public class ListCommentsAction extends BaseAction {
 
-	private HttpServletRequest request;
 	private List<Comment> comments;
 	
 	public String execute() throws Exception {
@@ -36,7 +33,7 @@ public class ListCommentsAction implements ServletRequestAware {
 		Dao dao = Dao.getInstance();
 		//LOG.info("object id : " + objectId, objectId);
 		if (objectId != null && !"".equals(objectId.trim()))
-			comments = dao.getComments(objectId);
+			comments = dao.getComments(objectId, getIndent());
 		//LOG.info("comments count : " + Integer.toString(comments.size()));
 		//LOG.info("text : " + comments.get(0).getText());
 		return SUCCESS;
@@ -46,9 +43,4 @@ public class ListCommentsAction implements ServletRequestAware {
 		return comments;
 	}
 
-	@Override
-	public void setServletRequest(HttpServletRequest request) {
-		this.request = request;
-	}
-	
 }

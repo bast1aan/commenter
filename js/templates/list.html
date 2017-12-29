@@ -8,6 +8,7 @@
 	<span class="commenter-head"><strong><%= comment.get('name') %></strong> on <strong><%= displayDate(new Date(comment.get('createdAt'))) %></strong> wrote:</span>
 	<p><%= filterCommentText(comment.get('text')) %></p>
 	<button class="reply" id="replyOn<%= comment.get('id') %>">Reply</button>
+	<% if (comment.get('editable')) { %><button class="edit" id="edit<%= comment.get('id') %>">Edit</button> <% } %>
 	<% if (commentsByParentId[comment.get('id')]) { %>
 	<%= render(commentsByParentId[comment.get('id')], commentsByParentId, alreadyProcessed, render) %>
 	<% } %>

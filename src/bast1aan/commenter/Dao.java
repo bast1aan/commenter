@@ -41,7 +41,7 @@ public class Dao {
 	
 	private ConnectionManager cm = new ConnectionManager();
 	
-	public List<Comment> getComments(String objectId) {
+	public List<Comment> getComments(String objectId, String indent) {
 		
 		List<Comment> comments = new ArrayList<Comment>();
 		
@@ -64,6 +64,8 @@ public class Dao {
 				comment.setText(result.getString("text"));
 				comment.setCreatedAt(result.getTimestamp("created_at"));
 				comment.setUpdatedAt(result.getTimestamp("updated_at"));
+				String resultIndent = result.getString("indent");
+				comment.setEditable(resultIndent != null ? resultIndent.trim().equals(indent) : false);
 				comments.add(comment);
 			}
 			result.close();

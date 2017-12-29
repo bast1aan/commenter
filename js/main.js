@@ -238,7 +238,8 @@ if ($commenterContainer instanceof jQuery) {
 		email : null,
 		text : null,
 		createdAt : null,
-		updatedAt : null
+		updatedAt : null,
+		editable : null
 	});
 
 	var CommentCollection = Backbone.Collection.extend({model : Comment});
