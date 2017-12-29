@@ -39,15 +39,17 @@ public class SaveCommentAction extends BaseAction implements ServletResponseAwar
 		String indent = getIndent();
 		
 		if (comment != null) {
+			Dao dao = Dao.getInstance();
+			
 			Integer id = comment.getId();
 			if (id != null) {
-				// prevent unauthorized update of existing comments
-				return ERROR;
+				String indentFromDb = dao.getCommentIndent(id);
+				if (indentFromDb == null || !indentFromDb.equals(indent))
+					// prevent unauthorized update of existing comments
+					return ERROR;
 			}
-			Dao dao = Dao.getInstance();
+
 			String remoteAddrHeader = Settings.getInstance().get(Settings.REMOTE_ADDR_HEADER);
-			//LOG.info(String.format("remoteAddrHeader: %s", remoteAddrHeader));
-			//LOG.info(String.format("request: %s", request.toString()));
 			String remoteAddr;
 			if (remoteAddrHeader == null) {
 				remoteAddr = request.getRemoteAddr();

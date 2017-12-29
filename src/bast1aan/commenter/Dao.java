@@ -183,5 +183,29 @@ public class Dao {
 		objectIdsArr = objectIds.toArray(objectIdsArr);
 		return countComments(objectIdsArr);
 	}
+	
+	public String getCommentIndent(int id) {
+		
+		final String query = "SELECT indent FROM comments WHERE id = ?";
+		
+		String indent = null;
+		
+		try {
+			PreparedStatement stmt = cm.getConnection().prepareStatement(query);
+			stmt.setInt(1, id);
+			ResultSet result = stmt.executeQuery();
+			if (result.next()) {
+				
+				indent = result.getString("indent");
+				if (indent != null)
+					indent = indent.trim();
+			}
+			result.close();
+		} catch (SQLException e) {
+			throw new CommenterException(String.format("Error executing query: %s", query), e);
+		}
+		
+		return indent;
+	}
 
 }
