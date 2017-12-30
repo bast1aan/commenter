@@ -408,6 +408,9 @@ if ($commenterContainer instanceof jQuery) {
 		},
 
 		replyOnComment : function(e) {
+			if (this.$el.find("textarea[name=text]").val() && !confirm("Do you want to cancel your current comment?")) {
+				return false;
+			}
 			var buttonNode = e.currentTarget;
 			var $allButtonsInNode = $(buttonNode.parentElement).find('.reply, .edit');
 			var parentId = buttonNode.id.substring("replyOn".length);
@@ -432,6 +435,9 @@ if ($commenterContainer instanceof jQuery) {
 		},
 		
 		editComment : function(e) {
+			if (this.$el.find("textarea[name=text]").val() && !confirm("Do you want to cancel your current comment?")) {
+				return false;
+			}
 			var buttonNode = e.currentTarget;
 			var $allButtonsInNode = $(buttonNode.parentElement).find('.reply, .edit');
 			var id = buttonNode.id.substring("edit".length);
