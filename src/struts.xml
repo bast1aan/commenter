@@ -50,7 +50,7 @@
 			</result>
 			<interceptor-ref name="json">
 				<param name="includeProperties">
-					comment
+					comment,indent
 				</param>
 			</interceptor-ref>
 			<interceptor-ref name="defaultStack"></interceptor-ref>

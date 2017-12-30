@@ -29,26 +29,53 @@ abstract public class BaseAction implements ServletRequestAware {
 	
 	protected HttpServletRequest request;
 	
+	protected String indent;
+	
 	protected String getIndent() {
 		String indent = null;
+		
+		// first try the GET parameter
+		
+		indent = request.getParameter(COOKIE_NAME);
+
+		if (validateIndent(indent))
+			return indent;
+		
+		// try the json parameter in case of POST/PUT
+		
+		indent = this.indent;
+
+		if (validateIndent(indent))
+			return indent;
+		
+		// try the cookie
+		
 		Cookie[] cookies = request.getCookies();
-		if (cookies == null) {
-			return null;
-		}
-		for (Cookie cookie : cookies) {
-			if (COOKIE_NAME.equals(cookie.getName())) {
-				indent = cookie.getValue();
+		if (cookies != null) {
+			for (Cookie cookie : cookies) {
+				if (COOKIE_NAME.equals(cookie.getName())) {
+					indent = cookie.getValue();
+				}
 			}
 		}
-		if (indent != null && indent.length() > 10 && indent.length() <= 32)
+		if (validateIndent(indent))
 			return indent;
+		
+		// in all other cases; not found
 		return null;
+	}
+	
+	private boolean validateIndent(String indent) {
+		return indent != null && indent.length() > 10 && indent.length() <= 32;
 	}
 
 	@Override
 	public void setServletRequest(HttpServletRequest request) {
 		this.request = request;
 	}
-	
+
+	public void setIndent(String indent) {
+		this.indent = indent;
+	}
 	
 }
