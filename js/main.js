@@ -308,7 +308,11 @@ if ($commenterContainer instanceof jQuery) {
 					// set cookie
 					var d = new Date();
 					d.setTime(d.getTime() + (365*24*60*60*1000));
-					document.cookie = "commenter_indent=" + data.indent + "; expires=" + d.toUTCString();
+					var secure = "";
+					if (location.protocol.substring(0, 5) == 'https') {
+						secure = "; secure";
+					}
+					document.cookie = "commenter_indent=" + data.indent + "; expires=" + d.toUTCString() + "; path=/" + secure;
 					// update our global indent as well
 					indent = data.indent;
 				}
