@@ -249,12 +249,33 @@ if ($commenterContainer instanceof jQuery) {
 	// For IE8 and IE9
 	jQuery.support.cors = true;
 
+	function getCookie(cname) {
+		var name = cname + "=";
+		var decodedCookie = decodeURIComponent(document.cookie);
+		var ca = decodedCookie.split(';');
+		for(var i = 0; i <ca.length; i++) {
+			var c = ca[i];
+			while (c.charAt(0) == ' ') {
+				c = c.substring(1);
+			}
+			if (c.indexOf(name) == 0) {
+				return c.substring(name.length, c.length);
+			}
+		}
+		return "";
+	}
+	var indent = getCookie('commenter_indent');
+
 	/**
 	 * Function to retrieve the comments and populate comment collection
 	 */
 	var readComments = function() {
+		var uriComponentIndent = "";
+		if (indent) {
+			uriComponentIndent = "&indent=" + indent;
+		}
 		jQuery.ajax({
-			url : commenterPath + "/listcomments.action?objectId=" + thisCommenterObjectId,
+			url : commenterPath + "/listcomments.action?objectId=" + thisCommenterObjectId + uriComponentIndent,
 			type : 'GET',
 			crossDomain : true,
 			success : function(data){
@@ -277,12 +298,20 @@ if ($commenterContainer instanceof jQuery) {
 		jQuery.ajax({
 			url : commenterPath + "/savecomment.action",
 			cache : false,
-			data : JSON.stringify({ 'comment' : comment }),
+			data : JSON.stringify({ 'comment' : comment, 'indent' : indent }),
 			contentType : 'application/json',
 			type : comment.get('id') ? 'PUT' : 'POST',
 			dataType : 'json',
 			crossDomain : true,
 			success : function(data){
+				if (data.indent) {
+					// set cookie
+					var d = new Date();
+					d.setTime(d.getTime() + (365*24*60*60*1000));
+					document.cookie = "commenter_indent=" + data.indent + "; expires=" + d.toUTCString();
+					// update our global indent as well
+					indent = data.indent;
+				}
 				if (data.comment) {
 					// re-read the comment list
 					readComments();
