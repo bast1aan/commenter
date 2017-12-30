@@ -31,8 +31,12 @@ abstract public class BaseAction implements ServletRequestAware {
 	
 	protected String getIndent() {
 		String indent = null;
-		for (Cookie cookie : request.getCookies()) {
-			if (cookie.getName().equals(COOKIE_NAME)) {
+		Cookie[] cookies = request.getCookies();
+		if (cookies == null) {
+			return null;
+		}
+		for (Cookie cookie : cookies) {
+			if (COOKIE_NAME.equals(cookie.getName())) {
 				indent = cookie.getValue();
 			}
 		}
