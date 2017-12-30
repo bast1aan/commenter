@@ -342,10 +342,18 @@ if ($commenterContainer instanceof jQuery) {
 			});
 			return this;
 		},
+		
+		onAttach : function() {},
 
 		attachToContainer : function() {
+			this.onAttach();
 			formComment.set('parentId', null);
 			$commenterContainer.append(this.$el);
+		},
+		
+		insertBefore : function($el) {
+			this.onAttach();
+			this.$el.insertBefore($el);
 		}
 	});
 
@@ -401,19 +409,25 @@ if ($commenterContainer instanceof jQuery) {
 
 		replyOnComment : function(e) {
 			var buttonNode = e.currentTarget;
+			var $allButtonsInNode = $(buttonNode.parentElement).find('.reply, .edit');
 			var parentId = buttonNode.id.substring("replyOn".length);
-			formView.$el.insertBefore($(buttonNode));
+			formView.insertBefore($(buttonNode));
 			formView.cancelButtonListener = function(e) {
-				$(buttonNode).show();
 				formView.cancelButton = false;
 				formView.attachToContainer();
 				return false;
 			};
+			formView.onAttach = function() {
+				$allButtonsInNode.show();
+				formView.onAttach = function(){};
+			};
+
 			formView.cancelButton = true;
 
+			formComment.clear();
 			formComment.set('parentId', parentId);
-			$('.reply').show();
-			$(buttonNode).hide();
+			//$('.reply').show();
+			$allButtonsInNode.hide();
 			formView.$el.find('h3').text('Reply');
 		},
 		
@@ -421,14 +435,18 @@ if ($commenterContainer instanceof jQuery) {
 			var buttonNode = e.currentTarget;
 			var $allButtonsInNode = $(buttonNode.parentElement).find('.reply, .edit');
 			var id = buttonNode.id.substring("edit".length);
-			formView.$el.insertBefore($(buttonNode));
+			formView.insertBefore($(buttonNode));
 			formView.cancelButtonListener = function(e) {
-				$allButtonsInNode.show();
 				formView.cancelButton = false;
 				formView.attachToContainer();
 				formComment.clear();
 				return false;
 			};
+			formView.onAttach = function() {
+				$allButtonsInNode.show();
+				formView.onAttach = function(){};
+			};
+			
 			formView.cancelButton = true;
 
 			formComment.set(this.collection.get(id).toJSON());
