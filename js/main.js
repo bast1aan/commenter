@@ -152,6 +152,20 @@ if (typeof $commenterContainer == "string") {
 }
 
 var countComments = function() {
+	
+	/**
+	 * Returns the common prefix of an array of strings
+	 * 
+	 * @param Array array
+	 * @returns string
+	 */
+	function commonPrefix(array) {
+		var A = array.concat().sort(), 
+		a1 = A[0], a2 = A[A.length-1], L = a1.length, i= 0;
+		while(i < L && a1.charAt(i) === a2.charAt(i)) i++;
+		return a1.substring(0, i);
+	}
+	
 	var countElements = {};
 	$('.commenter-count').each(function() {
 		var countContainer = $(this);
@@ -175,8 +189,22 @@ var countComments = function() {
 	
 	var countElementsQStrArr = []
 	var countElementsKeys = Object.keys(countElements)
-	for (var i in countElementsKeys) {
-		countElementsQStrArr.push("objectId=" + countElementsKeys[i])
+	
+	// pass the objectIDs with a common prefix in prefix(oipr)/postfixes(oipf) format,
+	// so the URI becomes much shorter
+	var oipr = commonPrefix(countElementsKeys);
+	if (oipr && countElementsKeys.length > 2) { // common prefix found, use the oipr/oipf syntax
+		countElementsQStrArr.push("oipr=" + oipr);
+		var len = oipr.length;
+		var oipfArr = [];
+		for (var i in countElementsKeys) {
+			oipfArr.push(countElementsKeys[i].substring(len));
+		}
+		countElementsQStrArr.push("oipf=" + oipfArr.join(','));
+	} else { // use separate objectId elements
+		for (var i in countElementsKeys) {
+			countElementsQStrArr.push("objectId=" + countElementsKeys[i])
+		}
 	}
 	jQuery.ajax({
 		url : commenterPath + "/countcomments.action?" + countElementsQStrArr.join('&'),
