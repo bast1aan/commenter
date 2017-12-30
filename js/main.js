@@ -370,6 +370,7 @@ if ($commenterContainer instanceof jQuery) {
 				comment.set(formValues);
 				saveComment(comment);
 				comment.set('text', '');
+				comment.set('id', null);
 				readComments();
 				return false;
 			});
@@ -447,6 +448,10 @@ if ($commenterContainer instanceof jQuery) {
 			var buttonNode = e.currentTarget;
 			var $allButtonsInNode = $(buttonNode.parentElement).find('.reply, .edit');
 			var parentId = buttonNode.id.substring("replyOn".length);
+			formComment.set('text', '');
+			formComment.set('id', null);
+			formComment.set('parentId', parentId);
+			formView.cancelButton = true;
 			formView.insertBefore($(buttonNode));
 			formView.cancelButtonListener = function(e) {
 				formView.cancelButton = false;
@@ -458,12 +463,8 @@ if ($commenterContainer instanceof jQuery) {
 				formView.onAttach = function(){};
 			};
 
-			formView.cancelButton = true;
-
-			formComment.set('text', '');
-			formComment.set('parentId', parentId);
-			//$('.reply').show();
 			$allButtonsInNode.hide();
+			formView.render();
 			formView.$el.find('h3').text('Reply');
 		},
 		
@@ -475,6 +476,8 @@ if ($commenterContainer instanceof jQuery) {
 			var $allButtonsInNode = $(buttonNode.parentElement).find('.reply, .edit');
 			var id = buttonNode.id.substring("edit".length);
 			var oldFormComment = formComment.clone();
+			formComment.set(this.collection.get(id).toJSON());
+			formView.cancelButton = true;
 			formView.insertBefore($(buttonNode));
 			formView.cancelButtonListener = function(e) {
 				formView.cancelButton = false;
@@ -487,9 +490,8 @@ if ($commenterContainer instanceof jQuery) {
 				formView.onAttach = function(){};
 			};
 			
-			formView.cancelButton = true;
+			formView.render();
 
-			formComment.set(this.collection.get(id).toJSON());
 			$allButtonsInNode.hide();
 		}
 
