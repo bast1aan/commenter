@@ -31,7 +31,7 @@ abstract public class BaseAction implements ServletRequestAware {
 	
 	protected String indent;
 	
-	protected String getIndent() {
+	protected String readIndent() {
 		String indent = null;
 		
 		// first try the GET parameter

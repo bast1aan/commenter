@@ -36,7 +36,7 @@ public class ListCommentsAction extends BaseAction implements ServletResponseAwa
 		Dao dao = Dao.getInstance();
 		//LOG.info("object id : " + objectId, objectId);
 		if (objectId != null && !"".equals(objectId.trim())) {
-			comments = dao.getComments(objectId, getIndent());
+			comments = dao.getComments(objectId, readIndent());
 			response.setHeader("Cache-Control", "private");
 		}
 		//LOG.info("comments count : " + Integer.toString(comments.size()));

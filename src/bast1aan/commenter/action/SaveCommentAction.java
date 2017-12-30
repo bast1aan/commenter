@@ -36,7 +36,7 @@ public class SaveCommentAction extends BaseAction implements ServletResponseAwar
 	private HttpServletResponse response;
 	
 	public String execute() throws Exception {
-		String indent = getIndent();
+		String indent = readIndent();
 		
 		if (comment != null) {
 			Dao dao = Dao.getInstance();
@@ -64,6 +64,7 @@ public class SaveCommentAction extends BaseAction implements ServletResponseAwar
 			} else {
 				dao.saveComment(comment, remoteAddr, indent);
 			}
+			this.indent = indent; // save indent to the action so it is send back to the browser along with the json
 		}
 		return SUCCESS;
 	}
@@ -118,4 +119,7 @@ public class SaveCommentAction extends BaseAction implements ServletResponseAwar
 		
 	}
 
+	public String getIndent() {
+		return indent;
+	}
 }
