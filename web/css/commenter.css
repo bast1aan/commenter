@@ -45,3 +45,9 @@
 .commenter-container #commenter-form h3 {
 	margin-top: 0;
 }
+
+.commenter-container p.commenter-edited {
+	margin-top: 0.5em;
+	font-style: italic;
+	color: #444;
+}

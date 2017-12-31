@@ -3,10 +3,17 @@
 <% var comment = comments[i]; %>
 <% if(_.contains(alreadyProcessed, comment.get('id')))
 	continue; %>
+<% var createdAt = new Date(comment.get('createdAt')); %>
+<% var updatedAt = new Date(comment.get('updatedAt')); %>
 <% alreadyProcessed.push(comment.get('id')); %>
 <li id="comment<%= comment.get('id') %>">
-	<span class="commenter-head"><strong><%= comment.get('name') %></strong> on <strong><%= displayDate(new Date(comment.get('createdAt'))) %></strong> wrote:</span>
+	<span class="commenter-head"><strong><%= comment.get('name') %></strong> on <strong><%= displayDate(createdAt) %></strong> wrote:</span>
 	<p><%= filterCommentText(comment.get('text')) %></p>
+<% 
+var delta = updatedAt.getTime() - createdAt.getTime();
+if(delta > 3600000 /* 1h */ || delta > 600000 /* 10min */ && commentsByParentId[comment.get('id')]) { %>
+	<p class="commenter-edited">Edited on <span class="commenter-date"><%= displayDate(updatedAt) %></span></p>
+<% } %>
 	<button class="reply" id="replyOn<%= comment.get('id') %>">Reply</button>
 	<% if (comment.get('editable')) { %><button class="edit" id="edit<%= comment.get('id') %>">Edit</button> <% } %>
 	<% if (commentsByParentId[comment.get('id')]) { %>
