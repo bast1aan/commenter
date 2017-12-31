@@ -22,12 +22,12 @@ import bast1aan.commenter.Comment;
 import bast1aan.commenter.Dao;
 import static com.opensymphony.xwork2.Action.SUCCESS;
 import java.util.List;
-import javax.servlet.http.HttpServletRequest;
-import org.apache.struts2.interceptor.ServletRequestAware;
+import javax.servlet.http.HttpServletResponse;
+import org.apache.struts2.interceptor.ServletResponseAware;
 
-public class ListCommentsAction implements ServletRequestAware {
+public class ListCommentsAction extends BaseAction implements ServletResponseAware {
 
-	private HttpServletRequest request;
+	private HttpServletResponse response;
 	private List<Comment> comments;
 	
 	public String execute() throws Exception {
@@ -35,8 +35,10 @@ public class ListCommentsAction implements ServletRequestAware {
 		String objectId = request.getParameter("objectId");
 		Dao dao = Dao.getInstance();
 		//LOG.info("object id : " + objectId, objectId);
-		if (objectId != null && !"".equals(objectId.trim()))
-			comments = dao.getComments(objectId);
+		if (objectId != null && !"".equals(objectId.trim())) {
+			comments = dao.getComments(objectId, readIndent());
+			response.setHeader("Cache-Control", "private");
+		}
 		//LOG.info("comments count : " + Integer.toString(comments.size()));
 		//LOG.info("text : " + comments.get(0).getText());
 		return SUCCESS;
@@ -47,8 +49,8 @@ public class ListCommentsAction implements ServletRequestAware {
 	}
 
 	@Override
-	public void setServletRequest(HttpServletRequest request) {
-		this.request = request;
+	public void setServletResponse(HttpServletResponse response) {
+		this.response = response;
 	}
-	
+
 }

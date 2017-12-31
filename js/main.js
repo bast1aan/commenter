@@ -266,7 +266,8 @@ if ($commenterContainer instanceof jQuery) {
 		email : null,
 		text : null,
 		createdAt : null,
-		updatedAt : null
+		updatedAt : null,
+		editable : null
 	});
 
 	var CommentCollection = Backbone.Collection.extend({model : Comment});
@@ -276,12 +277,33 @@ if ($commenterContainer instanceof jQuery) {
 	// For IE8 and IE9
 	jQuery.support.cors = true;
 
+	function getCookie(cname) {
+		var name = cname + "=";
+		var decodedCookie = decodeURIComponent(document.cookie);
+		var ca = decodedCookie.split(';');
+		for(var i = 0; i <ca.length; i++) {
+			var c = ca[i];
+			while (c.charAt(0) == ' ') {
+				c = c.substring(1);
+			}
+			if (c.indexOf(name) == 0) {
+				return c.substring(name.length, c.length);
+			}
+		}
+		return "";
+	}
+	var indent = getCookie('commenter_indent');
+
 	/**
 	 * Function to retrieve the comments and populate comment collection
 	 */
 	var readComments = function() {
+		var uriComponentIndent = "";
+		if (indent) {
+			uriComponentIndent = "&indent=" + indent;
+		}
 		jQuery.ajax({
-			url : commenterPath + "/listcomments.action?objectId=" + thisCommenterObjectId,
+			url : commenterPath + "/listcomments.action?objectId=" + thisCommenterObjectId + uriComponentIndent,
 			type : 'GET',
 			crossDomain : true,
 			success : function(data){
@@ -304,12 +326,24 @@ if ($commenterContainer instanceof jQuery) {
 		jQuery.ajax({
 			url : commenterPath + "/savecomment.action",
 			cache : false,
-			data : JSON.stringify({ 'comment' : comment }),
+			data : JSON.stringify({ 'comment' : comment, 'indent' : indent }),
 			contentType : 'application/json',
-			type : 'POST',
+			type : comment.get('id') ? 'PUT' : 'POST',
 			dataType : 'json',
 			crossDomain : true,
 			success : function(data){
+				if (data.indent) {
+					// set cookie
+					var d = new Date();
+					d.setTime(d.getTime() + (365*24*60*60*1000));
+					var secure = "";
+					if (location.protocol.substring(0, 5) == 'https') {
+						secure = "; secure";
+					}
+					document.cookie = "commenter_indent=" + data.indent + "; expires=" + d.toUTCString() + "; path=/" + secure;
+					// update our global indent as well
+					indent = data.indent;
+				}
 				if (data.comment) {
 					// re-read the comment list
 					readComments();
@@ -364,15 +398,24 @@ if ($commenterContainer instanceof jQuery) {
 				comment.set(formValues);
 				saveComment(comment);
 				comment.set('text', '');
+				comment.set('id', null);
 				readComments();
 				return false;
 			});
 			return this;
 		},
+		
+		onAttach : function() {},
 
 		attachToContainer : function() {
+			this.onAttach();
 			formComment.set('parentId', null);
 			$commenterContainer.append(this.$el);
+		},
+		
+		insertBefore : function($el) {
+			this.onAttach();
+			this.$el.insertBefore($el);
 		}
 	});
 
@@ -422,26 +465,64 @@ if ($commenterContainer instanceof jQuery) {
 		},
 
 		events: {
-			"click .reply" : 'replyOnComment'
+			"click .reply" : 'replyOnComment',
+			"click .edit" : 'editComment'
 		},
 
 		replyOnComment : function(e) {
+			if (this.$el.find("textarea[name=text]").val() && !confirm("Do you want to cancel your current comment?")) {
+				return false;
+			}
 			var buttonNode = e.currentTarget;
+			var $allButtonsInNode = $(buttonNode.parentElement).find('.reply, .edit');
 			var parentId = buttonNode.id.substring("replyOn".length);
-			formView.$el.insertBefore($(buttonNode));
+			formComment.set('text', '');
+			formComment.set('id', null);
+			formComment.set('parentId', parentId);
+			formView.cancelButton = true;
+			formView.insertBefore($(buttonNode));
 			formView.cancelButtonListener = function(e) {
-				$(buttonNode).show();
 				formView.cancelButton = false;
 				formView.attachToContainer();
 				return false;
 			};
-			formView.cancelButton = true;
+			formView.onAttach = function() {
+				$allButtonsInNode.show();
+				formView.onAttach = function(){};
+			};
 
-			formComment.set('parentId', parentId);
-			$('.reply').show();
-			$(buttonNode).hide();
+			$allButtonsInNode.hide();
+			formView.render();
 			formView.$el.find('h3').text('Reply');
+		},
+		
+		editComment : function(e) {
+			if (this.$el.find("textarea[name=text]").val() && !confirm("Do you want to cancel your current comment?")) {
+				return false;
+			}
+			var buttonNode = e.currentTarget;
+			var $allButtonsInNode = $(buttonNode.parentElement).find('.reply, .edit');
+			var id = buttonNode.id.substring("edit".length);
+			var oldFormComment = formComment.clone();
+			formComment.set(this.collection.get(id).toJSON());
+			formView.cancelButton = true;
+			formView.insertBefore($(buttonNode));
+			formView.cancelButtonListener = function(e) {
+				formView.cancelButton = false;
+				formView.attachToContainer();
+				formComment.set(oldFormComment.toJSON());
+				return false;
+			};
+			formView.onAttach = function() {
+				$allButtonsInNode.show();
+				formView.onAttach = function(){};
+			};
+			
+			formView.render();
+
+			$allButtonsInNode.hide();
 		}
+
 
 
 	});

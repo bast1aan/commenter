@@ -30,6 +30,7 @@ public class Comment {
 	private String text;
 	private Date createdAt;
 	private Date updatedAt;
+	private Boolean editable;
 
 	public Integer getId() {
 		return id;
@@ -93,6 +94,14 @@ public class Comment {
 
 	public void setUpdatedAt(Date updatedAt) {
 		this.updatedAt = updatedAt;
+	}
+
+	public Boolean getEditable() {
+		return editable;
+	}
+
+	public void setEditable(Boolean editable) {
+		this.editable = editable;
 	}
 	
 }

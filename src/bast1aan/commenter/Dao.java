@@ -41,7 +41,7 @@ public class Dao {
 	
 	private ConnectionManager cm = new ConnectionManager();
 	
-	public List<Comment> getComments(String objectId) {
+	public List<Comment> getComments(String objectId, String indent) {
 		
 		List<Comment> comments = new ArrayList<Comment>();
 		
@@ -64,6 +64,8 @@ public class Dao {
 				comment.setText(result.getString("text"));
 				comment.setCreatedAt(result.getTimestamp("created_at"));
 				comment.setUpdatedAt(result.getTimestamp("updated_at"));
+				String resultIndent = result.getString("indent");
+				comment.setEditable(resultIndent != null ? resultIndent.trim().equals(indent) : false);
 				comments.add(comment);
 			}
 			result.close();
@@ -74,7 +76,7 @@ public class Dao {
 		return comments;
 	}
 	
-	public void saveComment(Comment comment, String remoteAddr) {
+	public void saveComment(Comment comment, String remoteAddr, String indent) {
 		
 		Connection conn = cm.getConnection();
 		
@@ -86,17 +88,18 @@ public class Dao {
 		try {
 			if (id != null) {
 				//.update needed
-				query = "UPDATE comments SET parent_id = ?, object_id = ?, name = ?, email = ?, text = ?, ip = ?::inet, updated_at = now() WHERE id = ?";
+				query = "UPDATE comments SET parent_id = ?, object_id = ?, name = ?, email = ?, text = ?, ip = ?::inet, updated_at = now(), indent = ? WHERE id = ?";
 				stmt = conn.prepareStatement(query);
 			} else {
-				query = "INSERT INTO comments (parent_id, object_id, name, email, text, ip, created_at, updated_at) VALUES ( ?, ?, ?, ?, ?, ?::inet, now(), now() )";
+				query = "INSERT INTO comments (parent_id, object_id, name, email, text, ip, created_at, updated_at, indent) VALUES ( ?, ?, ?, ?, ?, ?::inet, now(), now(), ?)";
 				stmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
 			}
 			
 			setCommentToStatement(comment, stmt);
 			stmt.setString(6, remoteAddr);
+			stmt.setString(7, indent);
 			if (id != null) { // update
-				stmt.setLong(7, id);
+				stmt.setLong(8, id);
 			}
 			int affected = stmt.executeUpdate();
 			
@@ -179,6 +182,30 @@ public class Dao {
 		String[] objectIdsArr = new String[objectIds.size()];
 		objectIdsArr = objectIds.toArray(objectIdsArr);
 		return countComments(objectIdsArr);
+	}
+	
+	public String getCommentIndent(int id) {
+		
+		final String query = "SELECT indent FROM comments WHERE id = ?";
+		
+		String indent = null;
+		
+		try {
+			PreparedStatement stmt = cm.getConnection().prepareStatement(query);
+			stmt.setInt(1, id);
+			ResultSet result = stmt.executeQuery();
+			if (result.next()) {
+				
+				indent = result.getString("indent");
+				if (indent != null)
+					indent = indent.trim();
+			}
+			result.close();
+		} catch (SQLException e) {
+			throw new CommenterException(String.format("Error executing query: %s", query), e);
+		}
+		
+		return indent;
 	}
 
 }

@@ -38,7 +38,10 @@
 	width: 350px;
 }
 
-
 .commenter-container form textarea {
 	height: 12em; width: 350px;
+}
+
+.commenter-container #commenter-form h3 {
+	margin-top: 0;
 }

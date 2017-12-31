@@ -45,12 +45,12 @@
 		<action name="savecomment" class="bast1aan.commenter.action.SaveCommentAction" method="execute">
 			<result type="json">
 				<param name="includeProperties">
-					comment\..*
+					comment\..*,indent
 				</param>
 			</result>
 			<interceptor-ref name="json">
 				<param name="includeProperties">
-					comment
+					comment,indent
 				</param>
 			</interceptor-ref>
 			<interceptor-ref name="defaultStack"></interceptor-ref>
